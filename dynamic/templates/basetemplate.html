@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Hello World!</title>
+	</head>
+	<body>
+		<h1>Hello World, you bitch!</h1>
+        <p>{{ foo }}</p>
+        <p>{{ bar }}</p>
+        <form action="/" method="post">
+            <fieldset>
+                <legend>And you are?</legend>
+                <input type="text" name="name">
+            </fieldset>
+            <fieldset>
+                <legend>Where you stay at?</legend>
+                <input type="text" name="address">
+            </fieldset>
+            <fieldset>
+                <legend>Send it</legend>
+                <input type="submit" value="save">
+            </fieldset>
+        </form>
+        {% if form_content %}
+        <section>
+            <p>Yo name {{ form_content['name']|e }} and you stay at {{ form_content['address']|e }}</p>
+        </section>
+        {% endif %}
+	</body>
+</html>

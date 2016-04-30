@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Ballot</title>
+	</head>
+	<body>
+		<h1>Ballot</h1>
+        <form action="/ballot" method="post">
+            <fieldset>
+                <legend>Voter ID#</legend>
+                <input type="number" name="id">
+            </fieldset>
+            <fieldset>
+                <legend>Candidate Selection</legend>
+                <input type="radio" name="vote" value="Clinton"> Hillary Clinton (Democratic Party) <br>
+                <input type="radio" name="vote" value="Trump"> Donald Trump (Orange Party) <br>
+                <input type="radio" name="vote" value="Sanders"> Bernie Sanders (Independent) <br>
+                <input type="radio" name="vote" value="Cruz"> Ted Cruz (Crazy Party) <br>
+                <input type="radio" name="vote" value="Kasich"> John Kasich (Republican Party) <br>
+                <input type="radio" name="vote" value="Stein"> Jill Stein (Green Party) <br>
+                <input type="radio" name="vote" value="Other"> Other <br>
+            </fieldset>
+            <fieldset>
+                <legend>Issues Considered Most Important to Me</legend>
+                <input type="checkbox" name=="issues" value="economy"> The Economy <br>
+                <input type="checkbox" name=="issues" value="defense"> National Defense <br>
+                <input type="checkbox" name=="issues" value="education"> Education <br>
+                <input type="checkbox" name=="issues" value="income_inequality"> Income Inequality <br>
+                <input type="checkbox" name=="issues" value="environment"> The Environment <br>
+                <input type="checkbox" name=="issues" value="terrorism"> Terrorism <br>
+                <input type="checkbox" name=="issues" value="justice"> Social Justice <br>
+                <input type="checkbox" name=="issues" value="supreme_court"> The Supreme Court <br>
+                <input type="checkbox" name=="issues" value="guns"> Gun Control <br>
+                <input type="checkbox" name=="issues" value="govment"> Government Overreach <br>
+                <input type="checkbox" name=="issues" value="health"> Health Care <br>
+                <input type="checkbox" name=="issues" value="corruption"> Corruption <br>
+            </fieldset>
+            <fieldset>
+                <legend>Confirmation Email Address</legend>
+                <input type="email" name="email">
+            </fieldset>
+            <fieldset>
+                <legend>Confirmation Phone #</legend>
+                <input type="tel" name="phone">
+            </fieldset>
+            <input type="submit" value="Cast Vote">
+        </form>
+        {% if message %}
+        <section>
+            <h3>Vote Submitted</h3>
+            <p>{{ message }}</p>
+        </section>
+        {% endif %}
+	</body>
+</html>
