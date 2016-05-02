@@ -23,18 +23,18 @@
             </fieldset>
             <fieldset>
                 <legend>Issues Considered Most Important to Me</legend>
-                <input type="checkbox" name=="issues" value="economy"> The Economy <br>
-                <input type="checkbox" name=="issues" value="defense"> National Defense <br>
-                <input type="checkbox" name=="issues" value="education"> Education <br>
-                <input type="checkbox" name=="issues" value="income_inequality"> Income Inequality <br>
-                <input type="checkbox" name=="issues" value="environment"> The Environment <br>
-                <input type="checkbox" name=="issues" value="terrorism"> Terrorism <br>
-                <input type="checkbox" name=="issues" value="justice"> Social Justice <br>
-                <input type="checkbox" name=="issues" value="supreme_court"> The Supreme Court <br>
-                <input type="checkbox" name=="issues" value="guns"> Gun Control <br>
-                <input type="checkbox" name=="issues" value="govment"> Government Overreach <br>
-                <input type="checkbox" name=="issues" value="health"> Health Care <br>
-                <input type="checkbox" name=="issues" value="corruption"> Corruption <br>
+                <input type="checkbox" name="issues" value="economy"> The Economy <br>
+                <input type="checkbox" name="issues" value="defense"> National Defense <br>
+                <input type="checkbox" name="issues" value="education"> Education <br>
+                <input type="checkbox" name="issues" value="income_inequality"> Income Inequality <br>
+                <input type="checkbox" name="issues" value="environment"> The Environment <br>
+                <input type="checkbox" name="issues" value="terrorism"> Terrorism <br>
+                <input type="checkbox" name="issues" value="justice"> Social Justice <br>
+                <input type="checkbox" name="issues" value="supreme_court"> The Supreme Court <br>
+                <input type="checkbox" name="issues" value="guns"> Gun Control <br>
+                <input type="checkbox" name="issues" value="govment"> Government Overreach <br>
+                <input type="checkbox" name="issues" value="health"> Health Care <br>
+                <input type="checkbox" name="issues" value="corruption"> Corruption <br>
             </fieldset>
             <fieldset>
                 <legend>Confirmation Email Address</legend>
@@ -46,10 +46,15 @@
             </fieldset>
             <input type="submit" value="Cast Vote">
         </form>
-        {% if message %}
+        {% if cast %}
         <section>
             <h3>Vote Submitted</h3>
-            <p>{{ message }}</p>
+            <span>Voter ID#:  {{ id.number }}</span>
+            <span>Candidate:  {{ candidate.name }}</span>
+            <span>Issues given: {% for issue in issues %} {{ issue.name }},{% endfor %}</span>
+            <span>Email:  {{ email.address }}</span>
+            <span>Phone:  {{ phone.number }}</span>
+            <span></span>
         </section>
         {% endif %}
 	</body>

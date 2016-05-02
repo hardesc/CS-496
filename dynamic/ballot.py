@@ -4,8 +4,30 @@ from google.appengine.ext import ndb
 import db_defs
 
 class Ballot(base_page2.BaseHandler):
+    def __init__(self, request, response):
+        self.initialize(request, response)
+        self.template_values = {}
+
+    def render(self, page):
+        self.template_values = {'id':{'number':'','key':''}, 'candidate':{'name':'','key':''}, 'issues':[{'name':'','key':''}], 'email': {'address':'','key':''}, 'phone':{'number':'','key':''}}
+        cq = db_defs.Candidate.query().fetch()
+        #self.template_values['candidate'] = {'name':cq.name,'key':cq.key.urlsafe()}
+        self.template_values['candidate']['name'] = cq.name
+        self.template_values['candidate']['key'] = cq.key.urlsafe()
+
+        idq = db_defs.VoterID.query().fetch()
+        self.template_values['id'] = {'number':idq.number, 'key':idq.key.urlsafe()}
+        self.template_values['issues'] = [{'name':isq.issues, 'key':isq.key.urlsafe()} for isq in db_defs.Issues.query().fetch()]
+        eq = db_defs.Email.query().fetch()
+        self.template_values['email'] = {'address':eq.address, 'key':eq.key.urlsafe()}
+        pq = db_defs.Phone.query().fetch()
+        self.template_values['phone'] = {'number':pq.number, 'key':pq.key.urlsafe()}
+        self.template_values['cast'] = True
+        base_page2.BaseHandler.render(self, page, self.template_values)
+
+
     def get(self):
-        self.render('/ballot.html')
+        self.render('ballot.html')
 
     def post(self):
         k1 = ndb.Key(db_defs.VoterID, 'VoterID')
@@ -28,4 +50,4 @@ class Ballot(base_page2.BaseHandler):
         Phone = db_defs.Phone(parent=k5)
         Phone.number = int(self.request.get('phone'))
         Phone.put()
-        self.render('ballot.html', {'message':'You successfull cast your vote for ' + Candidate.name + '.'})
+        self.render('ballot.html')
