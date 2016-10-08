@@ -28,7 +28,7 @@
                 <input type="checkbox" name="issues" value="education"> Education <br>
                 <input type="checkbox" name="issues" value="income_inequality"> Income Inequality <br>
                 <input type="checkbox" name="issues" value="environment"> The Environment <br>
-                <input type="checkbox" name="issues" value="terrorism"> Terrorism <br>
+                <input type="checkbox" name="issues" value="terrorism"> Terries <br>
                 <input type="checkbox" name="issues" value="justice"> Social Justice <br>
                 <input type="checkbox" name="issues" value="supreme_court"> The Supreme Court <br>
                 <input type="checkbox" name="issues" value="guns"> Gun Control <br>
@@ -46,7 +46,10 @@
             </fieldset>
             <input type="submit" value="Cast Vote">
         </form>
-        {% if cast %}
+        <form action="/votes" method="post">
+            <input type="submit" value="View All Votes">
+        </form>
+        {% if cast == True %}
         <section>
             <h3>Vote Submitted</h3>
             <span>Voter ID#:  {{ id.number }}</span>
