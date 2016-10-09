@@ -16,7 +16,21 @@
 			<th>Edit</th>
 			<th>Delete</th>
 		</tr>
-
+		{% for vote in votes %}
+		<tr>
+			<td>{{ votes[loop.index0].VID }}</td>
+			<td>{{ votes[loop.index0].candidate }}</td>
+			<td>{{ votes[loop.index0].issues }}</td>
+			<td>{{ votes[loop.index0].email }}</td>
+			<td>{{ votes[loop.index0].phone }}</td>
+			<td>
+				<input type="button" value="Rig This Vote">
+			</td>
+			<td>
+				<input type="button" value="Delete This Vote">
+			</td>
+		</tr>		
+		{% endfor %}
 	</table>
 	</body>
 </html>

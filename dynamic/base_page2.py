@@ -16,6 +16,10 @@ class BaseHandler(webapp2.RequestHandler):
     	template = self.jinja2.get_template(template)
         self.response.write(template.render(template_variables))
 
+    def render2(self, template, template_variables=[]):
+        template = self.jinja2.get_template(template)
+        self.response.write(template.render(template_variables))
+
     def get(self):
         self.render('ballot.html')
         
