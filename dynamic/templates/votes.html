@@ -24,10 +24,17 @@
 			<td>{{ votes[loop.index0].email }}</td>
 			<td>{{ votes[loop.index0].phone }}</td>
 			<td>
-				<input type="button" value="Rig This Vote">
+				<form action="/votes" method="get">
+					<input type="submit" value="Rig This Vote">
+					<input type="hidden" value="{{ votes[loop.index0].key }}" name="key">
+				</form>
 			</td>
 			<td>
-				<input type="button" value="Delete This Vote">
+				<form action="/votes" method="get">
+					<input type="submit" value="Delete This Vote">
+					<input type="hidden" value="{{ votes[loop.index0].key }}" name="key">
+					<input type="hidden" value="true" name="delete">
+				</form>
 			</td>
 		</tr>		
 		{% endfor %}

@@ -39,7 +39,15 @@ class Votes(base_page2.BaseHandler):
     #don't actually know why this is necessary, if it is at all
     def get(self):
         self.template_values['cast'] = False
-        base_page2.BaseHandler.render(self, 'votes.html', Ballot.template_values)
+
+        if self.request.get('delete') == 'true':
+            url_key = self.request.get('key')
+            delete_key = ndb.Key(urlsafe=url_key)
+            delete_vote = delete_key.get()
+            delete_vote.key.delete()
+
+
+        self.render('votes.html')
 
     def post(self):
 
