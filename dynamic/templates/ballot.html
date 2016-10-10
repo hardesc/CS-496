@@ -5,11 +5,17 @@
 		<title>Ballot</title>
 	</head>
 	<body>
-		<h1>Ballot</h1>
+		<h1>Democratizer 2016</h1>
+        {% if editing == True %}
+            <h2>Welcome Back, Mrs. Clinton. Please rig this vote to your liking.</h2>
+        {% endif %}
         <form action="/ballot" method="post">
             <fieldset>
                 <legend>Voter ID#</legend>
-                <input type="number" name="id">
+                <input type="number" name="id"
+                    {% if editing == True %}
+                        value="{{ vote_to_edit.VID }}"
+                    {% endif %}>
             </fieldset>
             <fieldset>
                 <legend>Candidate Selection</legend>

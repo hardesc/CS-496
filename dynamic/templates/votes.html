@@ -20,13 +20,18 @@
 		<tr>
 			<td>{{ votes[loop.index0].VID }}</td>
 			<td>{{ votes[loop.index0].candidate }}</td>
-			<td>{{ votes[loop.index0].issues }}</td>
+			<td>
+				{% for issue in votes[loop.index0].issues %}
+					{{ issue }}
+				{% endfor %}
+			</td>
 			<td>{{ votes[loop.index0].email }}</td>
 			<td>{{ votes[loop.index0].phone }}</td>
 			<td>
-				<form action="/votes" method="get">
+				<form action="/ballot" method="get">
 					<input type="submit" value="Rig This Vote">
 					<input type="hidden" value="{{ votes[loop.index0].key }}" name="key">
+					<input type="hidden" value="true" name="edit">
 				</form>
 			</td>
 			<td>
