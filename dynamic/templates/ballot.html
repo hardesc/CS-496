@@ -19,36 +19,191 @@
             </fieldset>
             <fieldset>
                 <legend>Candidate Selection</legend>
-                <input type="radio" name="vote" value="Clinton"> Hillary Clinton (Democratic Party) <br>
-                <input type="radio" name="vote" value="Trump"> Donald Trump (Orange Party) <br>
-                <input type="radio" name="vote" value="Sanders"> Bernie Sanders (Independent) <br>
-                <input type="radio" name="vote" value="Cruz"> Ted Cruz (Crazy Party) <br>
-                <input type="radio" name="vote" value="Kasich"> John Kasich (Republican Party) <br>
-                <input type="radio" name="vote" value="Stein"> Jill Stein (Green Party) <br>
-                <input type="radio" name="vote" value="Other"> Other <br>
+                <input type="radio" name="vote" value="Clinton"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Clinton' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> Hillary Clinton (Democratic Party) <br>
+
+                <input type="radio" name="vote" value="Trump"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Trump' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> Donald Trump (Orange Party) <br>
+
+                <input type="radio" name="vote" value="Sanders"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Sanders' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> Bernie Sanders (Independent) <br>
+                    
+                <input type="radio" name="vote" value="Cruz"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Cruz' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> Ted Cruz (Crazy Party) <br>
+
+                <input type="radio" name="vote" value="Kasich"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Kasich' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> John Kasich (Republican Party) <br>
+
+                <input type="radio" name="vote" value="Stein"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Stein' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> Jill Stein (Green Party) <br> 
+                    
+                <input type="radio" name="vote" value="Other"
+                    {% if editing == True %}
+                        {% if vote_to_edit.candidate == 'Other' %}
+                            checked="checked"
+                        {% endif %}
+                    {% endif %}> Other <br> 
             </fieldset>
             <fieldset>
                 <legend>Issues Considered Most Important to Me</legend>
-                <input type="checkbox" name="issues" value="economy"> The Economy <br>
-                <input type="checkbox" name="issues" value="defense"> National Defense <br>
-                <input type="checkbox" name="issues" value="education"> Education <br>
-                <input type="checkbox" name="issues" value="income_inequality"> Income Inequality <br>
-                <input type="checkbox" name="issues" value="environment"> The Environment <br>
-                <input type="checkbox" name="issues" value="terrorism"> Terries <br>
-                <input type="checkbox" name="issues" value="justice"> Social Justice <br>
-                <input type="checkbox" name="issues" value="supreme_court"> The Supreme Court <br>
-                <input type="checkbox" name="issues" value="guns"> Gun Control <br>
-                <input type="checkbox" name="issues" value="govment"> Government Overreach <br>
-                <input type="checkbox" name="issues" value="health"> Health Care <br>
-                <input type="checkbox" name="issues" value="corruption"> Corruption <br>
+
+                <input type="checkbox" name="issues" value="economy"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'economy' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > The Economy <br>
+
+                <input type="checkbox" name="issues" value="defense"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'defense' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > National Defense <br>
+
+                <input type="checkbox" name="issues" value="education"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'education' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Education <br>
+
+                <input type="checkbox" name="issues" value="income_inequality"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'income_inequality' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Income Inequality <br>
+
+                <input type="checkbox" name="issues" value="environment"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'environment' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > The Environment <br>
+
+                <input type="checkbox" name="issues" value="terrorism"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'terrorism' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Terrorism <br>
+
+                <input type="checkbox" name="issues" value="justice"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'justice' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Social Justice <br>
+
+                <input type="checkbox" name="issues" value="supreme_court"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'supreme_court' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > The Supreme Court <br>
+
+                <input type="checkbox" name="issues" value="guns"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'guns' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Gun Control <br>
+
+                <input type="checkbox" name="issues" value="government"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'government' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Government Overreach <br>
+
+                <input type="checkbox" name="issues" value="health"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'health' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Health Care <br>
+
+                <input type="checkbox" name="issues" value="corruption"
+                {% if editing == True %}
+                    {% for issue in vote_to_edit.issues %}
+                        {% if issue == 'corruption' %}
+                            checked
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                > Corruption <br>
             </fieldset>
             <fieldset>
                 <legend>Confirmation Email Address</legend>
-                <input type="email" name="email">
+                <input type="email" name="email"
+                    {% if editing == True %}
+                        value="{{ vote_to_edit.email }}"
+                    {% endif %}>
             </fieldset>
             <fieldset>
                 <legend>Confirmation Phone #</legend>
-                <input type="tel" name="phone">
+                <input type="tel" name="phone"
+                    {% if editing == True %}
+                        value="{{ vote_to_edit.phone }}"
+                    {% endif %}>
             </fieldset>
             <input type="submit" value="Cast Vote">
         </form>

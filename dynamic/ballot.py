@@ -23,9 +23,9 @@ class Ballot(base_page2.BaseHandler):
 
     def get(self):
         self.template_values['cast'] = False
-        self.template_values['editing'] = True
-
+        
         if self.request.get('edit') == 'true':
+            self.template_values['editing'] = True
             url_key = self.request.get('key')
             edit_key = ndb.Key(urlsafe=url_key)
             edit_vote = edit_key.get()
