@@ -16,8 +16,8 @@ class Votes(base_page2.BaseHandler):
         self.template_values['votes'] = [{'VID':vq.VID, 'candidate':vq.candidate, 'issues':vq.issues, 'email':vq.email, 'phone':vq.phone, 'key':vq.key.urlsafe()} for vq in db_defs.Vote.query().fetch()]
 
         base_page2.BaseHandler.render(self, page, self.template_values)
-        
-    #don't actually know why this is necessary, if it is at all
+    
+    #this method only used when deleting a record    
     def get(self):
         self.template_values['cast'] = False
 

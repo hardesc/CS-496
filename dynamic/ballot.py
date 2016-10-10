@@ -21,6 +21,7 @@ class Ballot(base_page2.BaseHandler):
 
         base_page2.BaseHandler.render(self, page, self.template_values)
 
+    #this request used when either "Enter New Vote" or "Rig This Vote" button pressed to bring user back to cleared or populated ballot.html page, respectively
     def get(self):
         self.template_values['cast'] = False
         
@@ -36,12 +37,25 @@ class Ballot(base_page2.BaseHandler):
         base_page2.BaseHandler.render(self, 'ballot.html', self.template_values)
 
     def post(self):
-        key = ndb.Key(db_defs.Vote, 'Vote')
-        Vote = db_defs.Vote(parent=key)
+
+        #If this post request is an edit to an existing entity, retrieve it with its key
+        if self.request.get('edit') == 'true':
+            logging.info('EDITING')
+            url_key =  self.request.get('key')
+            logging.info("URL_SAFE KEY = %s" % url_key)
+            vote_key = ndb.Key(urlsafe=url_key)
+            Vote = vote_key.get()
+
+
+        #If not an edit, then this is a new entity being created
+        else: 
+            logging.info('NOT EDITING')
+            key = ndb.Key(db_defs.Vote, 'Vote')
+            Vote = db_defs.Vote(parent=key)
+
+        #Using the post request variables, populate the members of Vote and enter it into the db as entity
         Vote.VID = int(self.request.get('id'))
         Vote.candidate = self.request.get('vote')
-        
-
         Vote.issues = self.request.get('issues', allow_multiple=True)
         Vote.email = self.request.get('email')
         Vote.phone = int(self.request.get('phone'))

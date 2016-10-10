@@ -205,7 +205,18 @@
                         value="{{ vote_to_edit.phone }}"
                     {% endif %}>
             </fieldset>
+            {% if editing == True %}
+                <input type="hidden" name="key" value="{{ vote_to_edit.key }}">
+            {% endif %}
             <input type="submit" value="Cast Vote">
+            <input type="hidden" name="edit"
+            {% if editing == True %}
+                value="true" 
+            {% endif %}
+            {% if editing != True %}
+                value="false"
+            {% endif %}
+            >
         </form>
         <form action="/votes" method="post">
             <input type="submit" value="View All Votes">
