@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Votes</title>
+	</head>
+	<body>
+	<h1>Registered Votes</h1>
+	<table border="1" cellpadding="5" cellspacing="5">
+		<tr>
+			<th>Voter ID#</th>
+			<th>Candidate</th>
+			<th>Issues</th>
+			<th>Email</th>
+			<th>Phone</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+		{% for vote in votes %}
+		<tr>
+			<td>{{ votes[loop.index0].VID }}</td>
+			<td>{{ votes[loop.index0].candidate }}</td>
+			<td>
+				{% for issue in votes[loop.index0].issues %}
+					{{ issue }}
+				{% endfor %}
+			</td>
+			<td>{{ votes[loop.index0].email }}</td>
+			<td>{{ votes[loop.index0].phone }}</td>
+			<td>
+				<form action="/ballot" method="get">
+					<input type="submit" value="Rig This Vote">
+					<input type="hidden" value="{{ votes[loop.index0].key }}" name="key">
+					<input type="hidden" value="true" name="edit">
+				</form>
+			</td>
+			<td>
+				<form action="/votes" method="get">
+					<input type="submit" value="Delete This Vote">
+					<input type="hidden" value="{{ votes[loop.index0].key }}" name="key">
+					<input type="hidden" value="true" name="delete">
+				</form>
+			</td>
+		</tr>		
+		{% endfor %}
+	</table>
+	<form action="/ballot" method="get">
+		<input type="submit" value="Enter New Vote">
+		<input type="hidden" value="false" name="edit">
+	</form>
+	</body>
+</html>

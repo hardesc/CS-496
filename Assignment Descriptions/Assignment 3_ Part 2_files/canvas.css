@@ -1,0 +1,64 @@
+#header {
+  background-color: #fff;
+  min-width: 768px;
+  height: 65px;
+  background-image: none;
+}
+
+#header-inner {
+  padding-top: 5px;
+}
+
+#header-logo, #header.no-user #header-logo {
+  background: url("osu_logo.png") no-repeat scroll 0 center / 171px auto transparent;
+  bottom: 0;
+  height: 63px;
+  left: 0;
+  top: 0;
+  width: 171px;
+}
+
+#menu {
+  margin-top: 20px;
+  height: 40px;
+}
+
+#header-logo-secondary {
+  background: url("learn_at_oregonstate.png") no-repeat scroll 0 0 / 226px 26px transparent;
+  bottom: 11px;
+  display: block;
+  height: 26px;
+  position: absolute;
+  right: 15px;
+  width: 226px;
+}
+
+#identity {
+  background-color: #f5f2ed;
+  background-image: none;
+  color: #c34500;
+}
+
+#identity a {
+  color: #c34500 !important;
+}
+
+#identity .inbox a .unread-messages-count {
+  background-color: white;
+  color: black;
+}
+
+#identity #identity-help-container a {
+  color: black;
+}
+
+.menu-item .menu-item-title, .menu-item .menu-item-no-drop {
+  padding: 5px 14px;
+  height: auto;    
+  color: #252525;
+  text-shadow: none;
+}
+
+.menu-item .menu-item-drop {
+  top: 31px;
+}

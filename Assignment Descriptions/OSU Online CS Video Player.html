@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<!-- saved from url=(0065)http://eecs.oregonstate.edu/ecampus-video/player/player.php?id=85 -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<title>OSU Online CS Video Player</title>
+<link href="./OSU Online CS Video Player_files/video-js.min.css" rel="stylesheet">
+<link href="./OSU Online CS Video Player_files/jquery-ui.css" rel="stylesheet">
+<link href="./OSU Online CS Video Player_files/bootstrap.css" rel="stylesheet">
+<script src="./OSU Online CS Video Player_files/jquery-1.10.1.min.js"></script>
+<script src="./OSU Online CS Video Player_files/jquery-ui.js"></script>
+<script src="./OSU Online CS Video Player_files/video.js"></script>
+<script src="./OSU Online CS Video Player_files/bootstrap.min.js"></script>
+</head>
+<body style="background-color: rgb(2, 2, 2);">
+<div class="container" style="margin-top:75px;">
+	<div id="lecture_video" class="video-js vjs-default-skin vjs-paused vjs-controls-enabled vjs-user-inactive" style="width: 960px; height: 540px;"><video id="lecture_video_html5_api" class="vjs-tech" preload="auto" src="http://eecs.oregonstate.edu/ecampus-video/CS496/week2/app-engine-ndb.mp4">
+		<!--Auto Generated Video Sources Below -->
+<source src="http://eecs.oregonstate.edu/ecampus-video/CS496/week2/app-engine-ndb.mp4" type="video/mp4">
+	</video><div></div><div class="vjs-poster" tabindex="-1" style="display: none;"></div><div class="vjs-text-track-display"></div><div class="vjs-loading-spinner" style="display: none;"></div><div class="vjs-big-play-button" role="button" aria-live="polite" tabindex="0" aria-label="play video"><span aria-hidden="true"></span></div><div class="vjs-control-bar"><div class="vjs-play-control vjs-control " role="button" aria-live="polite" tabindex="0"><div class="vjs-control-content"><span class="vjs-control-text">Play</span></div></div><div class="vjs-current-time vjs-time-controls vjs-control"><div class="vjs-current-time-display" aria-live="off"><span class="vjs-control-text">Current Time </span>0:00</div></div><div class="vjs-time-divider"><div><span>/</span></div></div><div class="vjs-duration vjs-time-controls vjs-control"><div class="vjs-duration-display" aria-live="off"><span class="vjs-control-text">Duration Time </span>0:00</div></div><div class="vjs-remaining-time vjs-time-controls vjs-control"><div class="vjs-remaining-time-display" aria-live="off"><span class="vjs-control-text">Remaining Time </span>-0:00</div></div><div class="vjs-progress-control vjs-control"><div role="slider" aria-valuenow="NaN" aria-valuemin="0" aria-valuemax="100" tabindex="0" class="vjs-progress-holder vjs-slider" aria-label="video progress bar" aria-valuetext="0:00"><div class="vjs-load-progress" style="width: 3.49%;"><span class="vjs-control-text">Loaded: 0%</span></div><div class="vjs-play-progress" style="width: 0%;"><span class="vjs-control-text">Progress: 0%</span></div><div class="vjs-seek-handle vjs-slider-handle" style="left: 0%;"><span class="vjs-control-text">00:00</span></div></div></div><div class="vjs-fullscreen-control vjs-control " role="button" aria-live="polite" tabindex="0"><div class="vjs-control-content"><span class="vjs-control-text">Fullscreen</span></div></div><div class="vjs-volume-control vjs-control"><div role="slider" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" tabindex="0" class="vjs-volume-bar vjs-slider" aria-label="volume level" aria-valuetext="100%"><div class="vjs-volume-level" style="width: 100%;"><span class="vjs-control-text"></span></div><div class="vjs-volume-handle vjs-slider-handle" style="left: 100%;"><span class="vjs-control-text">00:00</span></div></div></div><div class="vjs-mute-control vjs-control" role="button" aria-live="polite" tabindex="0"><div><span class="vjs-control-text">Mute</span></div></div><div class="vjs-subtitles-button vjs-menu-button vjs-control " role="button" aria-live="polite" tabindex="0" aria-haspopup="true" aria-label="Subtitles Menu" style="display: none;"><div class="vjs-control-content"><span class="vjs-control-text">Subtitles</span></div><div class="vjs-menu"><ul class="vjs-menu-content"><li class="vjs-menu-item vjs-selected" role="button" aria-live="polite" tabindex="0" aria-selected="true">subtitles off</li></ul></div></div><div class="vjs-captions-button vjs-menu-button vjs-control " role="button" aria-live="polite" tabindex="0" aria-haspopup="true" aria-label="Captions Menu"><div class="vjs-control-content"><span class="vjs-control-text">Captions</span></div><div class="vjs-menu"><ul class="vjs-menu-content"><li class="vjs-menu-item vjs-selected" role="button" aria-live="polite" tabindex="0" aria-selected="true">captions off</li><li class="vjs-menu-item" role="button" aria-live="polite" tabindex="0" aria-selected="false">English</li></ul></div></div><div class="vjs-chapters-button vjs-menu-button vjs-control " role="button" aria-live="polite" tabindex="0" aria-haspopup="true" aria-label="Chapters Menu" style="display: none;"><div class="vjs-control-content"><span class="vjs-control-text">Chapters</span></div><div class="vjs-menu"><ul class="vjs-menu-content"></ul><li class="vjs-menu-title">Chapters</li></div></div></div></div>
+</div>
+	<script>
+
+		//var vid = videojs("lecture_video",{"nativeControlsForTouch":false},function(){
+		var vid = videojs("lecture_video",{},function(){
+			console.log("loaded video");
+			var bookmarks = [];
+			if(bookmarks.length > 0){
+				this.addChild("LocationsTab").loadBookmarks('[]');
+			}
+		});
+/*
+		$(".vjs-locations-tab").position({
+			my:"left top",
+			at:"right top",
+			of: "#lecture_video"
+		});
+*/
+
+	</script>
+
+
+</body></html>
