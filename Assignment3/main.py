@@ -20,6 +20,7 @@ import webapp2
 
 app = webapp2.WSGIApplication([
 	('/ballot', 'ballot.Ballot'),
-    ('/', 'base_page2.BaseHandler'),
-    ('/votes', 'votes.Votes')
+    ('/', 'base_page.BaseHandler'),
+    ('/votes', 'votes.Votes'),
+    ('/states', 'states.States')
 ], debug=True)
