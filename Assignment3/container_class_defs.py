@@ -1,10 +1,10 @@
 import sys
 import random
 from lists import Lists
-"""
+
 L = Lists()
-L.json_read_test()
-"""    
+#L.json_read_test()
+ 
 
 seed = random.seed()
 
