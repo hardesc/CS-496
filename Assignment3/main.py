@@ -22,5 +22,7 @@ app = webapp2.WSGIApplication([
 	('/ballot', 'ballot.Ballot'),
     ('/', 'base_page.BaseHandler'),
     ('/votes', 'votes.Votes'),
-    ('/states', 'states.States')
+    ('/states', 'states.States'),
+    ('/districts', 'states.Districts'),
+    ('/admin', 'admin.Admin')
 ], debug=True)

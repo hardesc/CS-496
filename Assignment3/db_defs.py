@@ -7,3 +7,8 @@ class State(ndb.Model):
     quant_electors = ndb.IntegerProperty(required=True)
     dist_key_list = ndb.KeyProperty(repeated=True, write_empty_list=True)
     elector_key_list = ndb.KeyProperty(repeated=True, write_empty_list=True)
+
+class District(ndb.Model):
+	number = ndb.IntegerProperty(required=True)
+	state = ndb.KeyProperty(required=True)
+	voters = ndb.KeyProperty(repeated=True, write_empty_list=True)
