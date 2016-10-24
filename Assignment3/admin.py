@@ -84,28 +84,44 @@ class Admin(base_page.BaseHandler):
 
 
 	#============================================ELECTORAL_COLLEGE============================================
-"""
-			class Electoral_College(ndb.Model):
-			evoter_id = ndb.IntegerProperty(required=True)
-			state = ndb.KeyProperty(required=True)
-			candidate = ndb.IntegerProperty(required=False)
-"""				
 			#============GET THE DISTRICTS FROM CONTAINERS, GET THEIR STATES, FILL STATE.DIST LISTS, PUT IN DB====
-			db_Dist_list = []
+			db_EC_list = []
 			key_list = []
 
-			for i, our_dist in enumerate(L.all_district_classes):
+			for i, our_ec in enumerate(L.all_electoral_classes):
 
-				key_list.append(ndb.Key(db_defs.District, 'Districts'))
-				db_Dist_list.append(db_defs.District(parent=key_list[i]))
+				key_list.append(ndb.Key(db_defs.Electoral_College, 'Electors'))
+				db_EC_list.append(db_defs.Electoral_College(parent=key_list[i]))
 
-				db_Dist_list[i].number = our_dist.number
-				db_Dist_list[i].state = state_key_dict[str(our_dist.state.abbr)]
+				db_EC_list[i].evoter_id = our_ec.evoter_id
+				db_EC_list[i].state = state_key_dict[str(our_ec.state.abbr)]
 				#db_Dist_list[i].voters = []
 
-			dist_keys = ndb.put_multi(db_Dist_list)#batch put all district keys in the db, store the keys in dist_keys
+			ec_keys = ndb.put_multi(db_EC_list)#batch put all district keys in the db, store the keys in dist_keys
 
+			#===================================================STATES.ELECTORS_KEY_LISTS======================================
+			#===============PUT A COPY OF EVERY NEWLY CREATED ELECTOR KEY IN IT'S PROPER STATE LIST IN THE DB=================
+			#extracts state object from ec_key, assigne the ec_key as an element in the state's ec_key_list...just trust me
 
+			
+			state_ec_keys_dict = {}
+			state_to_put_list = []
+			for state_key in state_keys:
+				ec_key_list = []
+				for ec_key in ec_keys:
+					if ec_key.get().state == state_key:
+						state_ec_keys_dict[state_key] = ec_key_list.append(ec_key)
+
+				state_ec_keys_dict[state_key] = ec_key_list
+				state_to_put = state_key.get()
+				state_to_put.elector_key_list = ec_key_list
+
+				state_to_put_list.append(state_to_put)
+
+				#state_to_put.put()
+				#break
+
+			ndb.put_multi(state_to_put_list)
 
 
 	def delete(self):
@@ -136,5 +152,10 @@ class Admin(base_page.BaseHandler):
 		qo = ndb.QueryOptions(keys_only=True)
 		nuke_dists = dist_qry.fetch(433, options=qo)
 
+		ec_qry = db_defs.Electoral_College.query()
+		qo = ndb.QueryOptions(keys_only=True)
+		nuke_college = ec_qry.fetch(535, options=qo)
+
 		ndb.delete_multi(nuke_states)
 		ndb.delete_multi(nuke_dists)
+		ndb.delete_multi(nuke_college)
