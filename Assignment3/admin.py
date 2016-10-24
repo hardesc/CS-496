@@ -95,6 +95,9 @@ class Admin(base_page.BaseHandler):
 
 				db_EC_list[i].evoter_id = our_ec.evoter_id
 				db_EC_list[i].state = state_key_dict[str(our_ec.state.abbr)]
+
+				if self.request.get('rand_ec_votes') == 'True':
+					db_EC_list[i].candidate = our_ec.candidate
 				#db_Dist_list[i].voters = []
 
 			ec_keys = ndb.put_multi(db_EC_list)#batch put all district keys in the db, store the keys in dist_keys
