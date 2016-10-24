@@ -126,6 +126,9 @@ class Admin(base_page.BaseHandler):
 
 			ndb.put_multi(state_to_put_list)
 
+			if self.request.get('rand_voters') == 'True'
+				
+
 
 	def delete(self):
 

@@ -8,6 +8,8 @@ class Lists():
         self.all_state_classes = []
         self.all_district_classes = []
         self.all_electoral_classes = []
+        self.all_vote_classes = []
+        self.all_voter_classes = []
         
         self.income_list = [
             '0 - $15,000', 

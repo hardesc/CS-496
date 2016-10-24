@@ -177,12 +177,27 @@ Dist_Key
 State_Key
 """ 
 class Vote():
-    def __init__(self, voter_id, theLists):
-        self.voter_id = voter_id
-        self.candidate = random.randint(0, len(theLists.candidate_list) - 1)
-        self.issues = random.sample([ i for i in range(len(theLists.issues_list))], random.randint(1, len(theLists.issues_list)))#pick a random combination of issues
-        self.state = random.choice(theLists.states_list)['state']
-        self.district = random.choice([ x for x in theLists.districts_list if x['state'] == self.state])['Number']
+    def __init__(self, voter_id, theLists, rand=True):
+        if rand:
+            self.voter_id = voter_id
+            self.candidate = random.randint(0, len(theLists.candidate_list) - 1)
+
+            #pick a random combination of issues
+            self.issues = random.sample([ i for i in range(len(theLists.issues_list))], random.randint(1, len(theLists.issues_list)))
+            self.state = random.choice(theLists.states_list)['state']
+            self.district = random.choice([ x for x in theLists.districts_list if x['state'] == self.state])['Number']
+        else:
+            self.voter_id = voter_id
+            self.candidate = None
+            self.issues = None
+            self.state = None
+            self.district = None
+
+    def fill(self, candidate, issues, state, district):
+        self.cadidate = candidate
+        self.issues = issues
+        self.state = state
+        self.district = district
         
     def db_decode_candidate(self, theLists):
         if type(self.candidate) is int:
@@ -229,25 +244,14 @@ def test_Vote(theLists):
         sys.stdout.write("%d.)" % (i))
         a_vote.print_Vote()
         
-"""        
-test_Voter()
-test_Vote(voterID_list)
-print voterID_list
-"""
+def generateRandVotes(n, theLists):
+    for i in range(0, n):
+        a_vote = Vote(n, thelists)
+        theLists.all_vote_classes.append(a_vote)
+
+def testRandVotes(theLists):
+    for vote in theLists.all_vote_classes:
+        vote.print_Vote
 
 
-
-"""
-generate_all_states(L)
-generate_all_districts(L)
-generate_all_electoral_college(L)
-
-
-display_all_states(L)
-display_all_districts(L)
-
-
-test_Voter(L)
-test_Vote(L)
-"""
 """----------------------------------------END---------------------------------------------"""
