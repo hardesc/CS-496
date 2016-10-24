@@ -58,6 +58,7 @@ class Admin(base_page.BaseHandler):
 
 			dist_keys = ndb.put_multi(db_Dist_list)#batch put all district keys in the db, store the keys in dist_keys
 
+			#===================================================STATES.DISTRICT_KEY_LISTS======================================
 			#===============PUT A COPY OF EVERY NEWLY CREATED DISTRICT KEY IN IT'S PROPER STATE LIST IN THE DB=================
 			#extracts state object from dist_key, assigne the dist_key as an element in the state's dist_key_list...just trust me
 
@@ -80,7 +81,31 @@ class Admin(base_page.BaseHandler):
 				#break
 
 			ndb.put_multi(state_to_put_list)
-				
+
+
+	#============================================ELECTORAL_COLLEGE============================================
+"""
+			class Electoral_College(ndb.Model):
+			evoter_id = ndb.IntegerProperty(required=True)
+			state = ndb.KeyProperty(required=True)
+			candidate = ndb.IntegerProperty(required=False)
+"""				
+			#============GET THE DISTRICTS FROM CONTAINERS, GET THEIR STATES, FILL STATE.DIST LISTS, PUT IN DB====
+			db_Dist_list = []
+			key_list = []
+
+			for i, our_dist in enumerate(L.all_district_classes):
+
+				key_list.append(ndb.Key(db_defs.District, 'Districts'))
+				db_Dist_list.append(db_defs.District(parent=key_list[i]))
+
+				db_Dist_list[i].number = our_dist.number
+				db_Dist_list[i].state = state_key_dict[str(our_dist.state.abbr)]
+				#db_Dist_list[i].voters = []
+
+			dist_keys = ndb.put_multi(db_Dist_list)#batch put all district keys in the db, store the keys in dist_keys
+
+
 
 
 	def delete(self):

@@ -12,3 +12,8 @@ class District(ndb.Model):
 	number = ndb.IntegerProperty(required=True)
 	state = ndb.KeyProperty(required=True)
 	voters = ndb.KeyProperty(repeated=True, write_empty_list=True)
+
+class Electoral_College(ndb.Model):
+	evoter_id = ndb.IntegerProperty(required=True)
+	state = ndb.KeyProperty(required=True)
+	candidate = ndb.IntegerProperty(required=False)
