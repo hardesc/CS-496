@@ -246,12 +246,16 @@ def test_Vote(theLists):
         
 def generateRandVotes(n, theLists):
     for i in range(0, n):
-        a_vote = Vote(n, thelists)
+        a_vote = Vote(n, theLists)
         theLists.all_vote_classes.append(a_vote)
 
 def testRandVotes(theLists):
     for vote in theLists.all_vote_classes:
-        vote.print_Vote
+        vote.db_decode_all(theLists)
+        vote.print_Vote()
+        
+generateRandVotes(10, L)
+testRandVotes(L)
 
 
 """----------------------------------------END---------------------------------------------"""
