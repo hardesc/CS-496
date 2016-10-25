@@ -98,18 +98,28 @@ Ethnicity
 Education_Lvl
 """
 class Voter():
-    def __init__(self, theLists):
-        self.id = 0
-        while self.id in theLists.voterID_list or self.id == 0:
-            self.id = random.randrange(100000)
-        
-        self.party = random.choice(['D', 'R', 'G', 'L', 'I', 'O'])
-        self.age = random.randrange(18, 105)
-        self.sex = random.choice(['M', 'F'])
-        self.income_lvl = random.randint(0, len(theLists.income_list) - 1)
-        self.ethnicity = random.sample([ i for i in range(len(theLists.ethnicity_list))], random.randint(1, len(theLists.ethnicity_list)))#pick a random combination of ethnicities
-        self.education_lvl = random.randint(0, len(theLists.education_lvl_list) - 1)
-        
+    def __init__(self, theLists, rand_range=0):
+
+        if rand_range != 0:
+            self.id = 0
+            while self.id in theLists.voterID_list or self.id == 0:
+                self.id = random.randrange(rand_range)
+                self.party = random.choice(['D', 'R', 'G', 'L', 'I', 'O'])
+                self.age = random.randrange(18, 105)
+                self.sex = random.choice(['M', 'F'])
+                self.income_lvl = random.randint(0, len(theLists.income_list) - 1)
+                self.ethnicity = random.sample([ i for i in range(len(theLists.ethnicity_list))], random.randint(1, len(theLists.ethnicity_list)))#pick a random combination of ethnicities
+                self.education_lvl = random.randint(0, len(theLists.education_lvl_list) - 1)
+    
+        else:
+            self.id = None
+            self.party = None
+            self.age = None
+            self.sex = None
+            self.income_lvl = None
+            self.ethnicity = None
+            self.education_lvl = None
+
         theLists.voterID_list.append(self.id)
         
     def print_Voter(self):
@@ -244,18 +254,24 @@ def test_Vote(theLists):
         sys.stdout.write("%d.)" % (i))
         a_vote.print_Vote()
         
-def generateRandVotes(n, theLists):
-    for i in range(0, n):
-        a_vote = Vote(n, theLists)
+def generateRandVotes(theLists):
+    for voter in theLists.all_voter_classes:
+        a_vote = Vote(voter.id, theLists)
         theLists.all_vote_classes.append(a_vote)
 
-def testRandVotes(theLists):
+def testRandVotes(theLists, decode=True):
     for vote in theLists.all_vote_classes:
-        vote.db_decode_all(theLists)
+        if decode:
+            vote.db_decode_all(theLists)
         vote.print_Vote()
-        
-generateRandVotes(10, L)
-testRandVotes(L)
 
+def generateRandVoters(n, theLists):
+    for i in range(0, n):
+        a_voter = Voter(theLists, n * 10)
+        theLists.all_voter_classes.append(a_voter)
 
-"""----------------------------------------END---------------------------------------------"""
+def testRandVoters(theLists, decode=True):
+    for voter in theLists.all_voter_classes:
+        if decode:
+            voter.db_decode_all(theLists)
+        voter.print_Voter()

@@ -17,3 +17,22 @@ class Electoral_College(ndb.Model):
 	evoter_id = ndb.IntegerProperty(required=True)
 	state = ndb.KeyProperty(required=True)
 	candidate = ndb.IntegerProperty(required=False)
+
+
+class Vote(ndb.Model):
+	voter_key = ndb.KeyProperty(required=True)#must be changed to true after testing complete
+	candidate = ndb.IntegerProperty(required=True)
+	issues = ndb.IntegerProperty(repeated=True)
+	dist_key = ndb.KeyProperty(required=False)
+	state_key = ndb.KeyProperty(required=False)
+
+
+class Voter(ndb.Model):
+	voter_id = ndb.IntegerProperty(required=True)
+	vote_key = ndb.KeyProperty(required=False)
+	party = ndb.StringProperty(required=True)
+	age = ndb.IntegerProperty(required=True)
+	sex = ndb.BooleanProperty(required=True)
+	income_lvl = ndb.IntegerProperty(required=True)
+	ethnicity = ndb.IntegerProperty(repeated=True)
+	education_lvl = ndb.IntegerProperty(required=True)
