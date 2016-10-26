@@ -17,7 +17,7 @@ class Admin(base_page.BaseHandler):
 		#===============================FULL DATABASE LOAD FROM SCRATCH==========================
 		if self.request.get('fill_all') == 'True':
 
-			self.nuke()#clear the entire db, since we're filling it from scratch
+			self.nukeItAll()#clear the entire db, since we're filling it from scratch
 
 			#===============GENERATE AND GET ALL OUR LISTS------------------------
 			L = Lists()
@@ -196,7 +196,7 @@ class Admin(base_page.BaseHandler):
 	def delete(self):
 
 		if self.request.get('nuke') == 'True':
-			self.nuke()
+			self.nukeItAll()
 
 	def get(self):
 
@@ -211,11 +211,14 @@ class Admin(base_page.BaseHandler):
 					state_got = dist.get().state.get()
 					self.response.write("%d) dist data: state = %s; number = %d\n" % (i, dist.get().state.get().abbr, dist.get().number))
 
-	def nuke(self):
-
+	def nukeItAll(self):
+		"""
 		state_qry = db_defs.State.query()
 		qo = ndb.QueryOptions(keys_only=True)
-		nuke_states = state_qry.fetch(51, options=qo)
+		state_count = state_qry.count(limit=None, options=qo)
+		if (state_count):
+			nuke_states = state_qry.fetch(state_count, options=qo)
+			ndb.delete_multi(nuke_states)
 
 		dist_qry = db_defs.District.query()
 		qo = ndb.QueryOptions(keys_only=True)
@@ -232,10 +235,21 @@ class Admin(base_page.BaseHandler):
 		vote_qry = db_defs.Vote.query()
 		qo = ndb.QueryOptions(keys_only=True)
 		nuke_votes = vote_qry.fetch(10, options=qo)
+		"""
 
-
-		ndb.delete_multi(nuke_states)
-		ndb.delete_multi(nuke_dists)
+		self.nuke(db_defs.State)
+		self.nuke(db_defs.District)
+		self.nuke(db_defs.Electoral_College)
+		self.nuke(db_defs.Vote)
+		self.nuke(db_defs.Voter)
+		"""
 		ndb.delete_multi(nuke_college)
 		ndb.delete_multi(nuke_voters)
 		ndb.delete_multi(nuke_votes)
+		"""
+	def nuke(self, Entity):
+		Entity_qry = Entity.query()
+		qo = ndb.QueryOptions(keys_only=True)
+		ent_count = Entity_qry.count(limit=None, options=qo)
+		if (ent_count):
+			ndb.delete_multi(Entity_qry.fetch(ent_count, options=qo))
