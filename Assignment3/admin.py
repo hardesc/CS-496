@@ -54,7 +54,7 @@ class Admin(base_page.BaseHandler):
 				db_Dist_list.append(db_defs.District(parent=key_list[i]))
 
 				db_Dist_list[i].number = our_dist.number
-				db_Dist_list[i].state = state_key_dict[str(our_dist.state.abbr)]
+				db_Dist_list[i].state_key = state_key_dict[str(our_dist.state.abbr)]
 				#db_Dist_list[i].voters = []
 
 			dist_keys = ndb.put_multi(db_Dist_list)#batch put all district keys in the db, store the keys in dist_keys
@@ -69,7 +69,7 @@ class Admin(base_page.BaseHandler):
 			for state_key in state_keys:
 				dist_key_list = []
 				for dist_key in dist_keys:
-					if dist_key.get().state == state_key:
+					if dist_key.get().state_key == state_key:
 						state_dist_keys_dict[state_key] = dist_key_list.append(dist_key)
 
 				state_dist_keys_dict[state_key] = dist_key_list
@@ -95,7 +95,7 @@ class Admin(base_page.BaseHandler):
 				db_EC_list.append(db_defs.Electoral_College(parent=key_list[i]))
 
 				db_EC_list[i].evoter_id = our_ec.evoter_id
-				db_EC_list[i].state = state_key_dict[str(our_ec.state.abbr)]
+				db_EC_list[i].state_key = state_key_dict[str(our_ec.state.abbr)]
 
 				if self.request.get('rand_ec_votes') == 'True':
 					db_EC_list[i].candidate = our_ec.candidate
@@ -113,7 +113,7 @@ class Admin(base_page.BaseHandler):
 			for state_key in state_keys:
 				ec_key_list = []
 				for ec_key in ec_keys:
-					if ec_key.get().state == state_key:
+					if ec_key.get().state_key == state_key:
 						state_ec_keys_dict[state_key] = ec_key_list.append(ec_key)
 
 				state_ec_keys_dict[state_key] = ec_key_list
@@ -178,18 +178,44 @@ class Admin(base_page.BaseHandler):
 						if dist.get().number == vote.district:
 							db_vote_list[i].dist_key = dist
 
-				vote_key_list = ndb.put_multi_async(db_vote_list)
+				future_vote_key_list = ndb.put_multi_async(db_vote_list)
 
 				#===================================PUT ALL VOTE_KEYS IN VOTERS==================================================
 				db_voter_list = []
-				for vote_key in vote_key_list:
+				for vote_key in future_vote_key_list:
 					vote_key.get_result().get().voter_key.get().vote_key = vote_key.get_result()
 					db_voter_list.append(vote_key.get_result().get().voter_key.get())
 
 					self.response.write("Voter id: %d\n" % (db_voter_list[-1].voter_id))
 
 				#time.sleep(30)
-				voter_key_list = ndb.put_multi(db_voter_list)
+				future_voter_key_list = ndb.put_multi(db_voter_list)
+
+				#===================================PUT ALL VOTER_KEYS IN DISTRICTS==================================================
+				"""
+				state_key_dict
+				state_dist_keys_dict
+				"""
+
+				dist_vote_keys_dict = {}
+				dist_to_put_list = []
+				for dist_key in dist_keys:
+					vote_key_list = []
+					for vote_key in future_vote_key_list:
+						if vote_key.get_result().get().dist_key == dist_key:
+							dist_vote_keys_dict[dist_key] = vote_key_list.append(vote_key.get_result())
+
+					dist_vote_keys_dict[dist_key] = vote_key_list
+					dist_to_put = dist_key.get()
+					dist_to_put.vote_key_list = vote_key_list
+
+					dist_to_put_list.append(dist_to_put)
+
+					#state_to_put.put()
+					#break
+
+				ndb.put_multi(dist_to_put_list)
+
 
 
 
@@ -211,42 +237,20 @@ class Admin(base_page.BaseHandler):
 					state_got = dist.get().state.get()
 					self.response.write("%d) dist data: state = %s; number = %d\n" % (i, dist.get().state.get().abbr, dist.get().number))
 
+		if self.request.get('count') == 'True':
+
+			count_qry = db_defs.Vote.query()
+			count = count_qry.count(Limit=None)
+			self.response.write("Vote Count: %d" % (count))
+
 	def nukeItAll(self):
-		"""
-		state_qry = db_defs.State.query()
-		qo = ndb.QueryOptions(keys_only=True)
-		state_count = state_qry.count(limit=None, options=qo)
-		if (state_count):
-			nuke_states = state_qry.fetch(state_count, options=qo)
-			ndb.delete_multi(nuke_states)
-
-		dist_qry = db_defs.District.query()
-		qo = ndb.QueryOptions(keys_only=True)
-		nuke_dists = dist_qry.fetch(433, options=qo)
-
-		ec_qry = db_defs.Electoral_College.query()
-		qo = ndb.QueryOptions(keys_only=True)
-		nuke_college = ec_qry.fetch(535, options=qo)
-
-		voter_qry = db_defs.Voter.query()
-		qo = ndb.QueryOptions(keys_only=True)
-		nuke_voters = voter_qry.fetch(10, options=qo)
-
-		vote_qry = db_defs.Vote.query()
-		qo = ndb.QueryOptions(keys_only=True)
-		nuke_votes = vote_qry.fetch(10, options=qo)
-		"""
 
 		self.nuke(db_defs.State)
 		self.nuke(db_defs.District)
 		self.nuke(db_defs.Electoral_College)
 		self.nuke(db_defs.Vote)
 		self.nuke(db_defs.Voter)
-		"""
-		ndb.delete_multi(nuke_college)
-		ndb.delete_multi(nuke_voters)
-		ndb.delete_multi(nuke_votes)
-		"""
+
 	def nuke(self, Entity):
 		Entity_qry = Entity.query()
 		qo = ndb.QueryOptions(keys_only=True)
