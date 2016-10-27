@@ -31,8 +31,8 @@ class Admin(base_page.BaseHandler):
 			#===================GET THE STATES FROM THE CONTAINERS AND PUT THEM IN THE DB============
 			for i, our_state in enumerate(L.all_state_classes):
 
-				key_list.append(ndb.Key(db_defs.State, 'States'))
-				db_State_list.append(db_defs.State(parent=key_list[i]))
+				#key_list.append(ndb.Key(db_defs.State, 'States'))
+				db_State_list.append(db_defs.State())
 
 				db_State_list[i].abbr = our_state.abbr
 				db_State_list[i].quant_districts = our_state.quant_districts
@@ -51,8 +51,8 @@ class Admin(base_page.BaseHandler):
 
 			for i, our_dist in enumerate(L.all_district_classes):
 
-				key_list.append(ndb.Key(db_defs.District, 'Districts'))
-				db_Dist_list.append(db_defs.District(parent=key_list[i]))
+				#key_list.append(ndb.Key(db_defs.District, 'Districts'))
+				db_Dist_list.append(db_defs.District())
 
 				db_Dist_list[i].number = our_dist.number
 				db_Dist_list[i].state_key = state_key_dict[str(our_dist.state.abbr)]
@@ -92,8 +92,8 @@ class Admin(base_page.BaseHandler):
 
 			for i, our_ec in enumerate(L.all_electoral_classes):
 
-				key_list.append(ndb.Key(db_defs.Electoral_College, 'Electors'))
-				db_EC_list.append(db_defs.Electoral_College(parent=key_list[i]))
+				#key_list.append(ndb.Key(db_defs.Electoral_College, 'Electors'))
+				db_EC_list.append(db_defs.Electoral_College())
 
 				db_EC_list[i].evoter_id = our_ec.evoter_id
 				db_EC_list[i].state_key = state_key_dict[str(our_ec.state.abbr)]
@@ -143,8 +143,8 @@ class Admin(base_page.BaseHandler):
 
 				for i, voter in enumerate(L.all_voter_classes):
 
-					key_list.append(ndb.Key(db_defs.Voter, 'Voters'))
-					db_voter_list.append(db_defs.Voter(parent=key_list[i]))
+					#key_list.append(ndb.Key(db_defs.Voter, 'Voters'))
+					db_voter_list.append(db_defs.Voter())
 
 					db_voter_list[i].voter_id = voter.id
 					db_voter_list[i].party = voter.party
@@ -163,8 +163,8 @@ class Admin(base_page.BaseHandler):
 				db_vote_list = []
 				for i, vote in enumerate(L.all_vote_classes):
 
-					key_list.append(ndb.Key(db_defs.Vote, 'Votes'))
-					db_vote_list.append(db_defs.Vote(parent=key_list[i]))
+					#key_list.append(ndb.Key(db_defs.Vote, 'Votes'))
+					db_vote_list.append(db_defs.Vote())
 
 					
 					db_vote_list[i].voter_key = voter_key_dict[vote.voter_id]

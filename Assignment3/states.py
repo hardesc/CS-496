@@ -30,25 +30,30 @@ class States(base_page.BaseHandler):
 
 		elif self.request.get('state'):
 
-			get_var = str(self.request.get('state'))
-			if len(get_var) > 2:
-				the_state = ndb.Key(urlsafe=get_var).get()
-			elif len(get_var) == 2:
-				#self.response.write("the state: %s" % (the_state.get().abbr))
-				#q = q.filter(MyModel._properties[kw] == v)
-				#self.response.write("get_var = %s" % (get_var))
+			get_var = self.request.get('state')
 
-				q = db_defs.State.query(db_defs.State.abbr == get_var)
-				#self.response.write("db_defs.State.abbr = %s\tget_var = %s" % (db_defs.State.abbr))
-				the_state = q.fetch()[0]
-			result = the_state.to_dict()
-			#self.response.write(str(result))
-			#return
-			result['elector_key_list'] = [str(elector_key.urlsafe()) for elector_key in result['elector_key_list']]
-			result['dist_key_list'] = [str(dist_key.urlsafe()) for dist_key in result['dist_key_list']]
-			result['key'] = the_state.key.urlsafe()
-			json_dict = {the_state.abbr : result}
-			self.response.write(json.dumps(json_dict))
+			#condition that a specific state was passed into get_var, not "all"
+			if len(get_var) > 3 or len(get_var) == 2:
+
+				if len(get_var) > 3:
+					the_state = db_defs.State.get_by_id(int(get_var))
+				elif len(get_var) == 2:
+					#self.response.write("the state: %s" % (the_state.get().abbr))
+					#q = q.filter(MyModel._properties[kw] == v)
+					#self.response.write("get_var = %s" % (get_var))
+
+					q = db_defs.State.query(db_defs.State.abbr == get_var)
+					#self.response.write("db_defs.State.abbr = %s\tget_var = %s" % (db_defs.State.abbr))
+					the_state = q.fetch()[0]
+				result = the_state.to_dict()
+				#self.response.write(str(result))
+				#return
+				result['elector_key_list'] = [str(elector_key.id()) for elector_key in result['elector_key_list']]
+				result['dist_key_list'] = [str(dist_key.id()) for dist_key in result['dist_key_list']]
+				result['key'] = the_state.key.id()
+
+				states_dict = {the_state.abbr : result}
+			#self.response.write(json.dumps(states_dict))
 			#self.response.write("Abbr: %s" % (state.abbr))
 
 
@@ -76,4 +81,4 @@ class States(base_page.BaseHandler):
 
 			states_dict['State'] = result_list
 
-			self.response.write(json.dumps(states_dict))
+		self.response.write(json.dumps(states_dict))
