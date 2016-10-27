@@ -3,82 +3,77 @@ import base_page
 from google.appengine.ext import ndb
 import db_defs
 import container_class_defs
-from lists import Lists
+import json
 
 class States(base_page.BaseHandler):
 	def __init__(self, request, response):
 		self.initialize(request, response) #forgot why this is here
 
-	def post(self):
-		self.response.write("this is a post\n\n")
+	def get(self):
 
-		#Fill the states entity with pre loaded state values derived from json from api calls
-		if self.request.get('fill_all') == 'True':
+		if self.request.get('test')  == 'True':
 
-			L = Lists()
-			container_class_defs.generate_all_states(L)
-			db_State_list = []
-			key_list = []
+			qry = db_defs.State.query()
+			states = qry.fetch()
 
-			for i, our_state in enumerate(L.all_state_classes):
+			for state in states:
+				self.response.write("%s: " % (state.abbr))
+				for i, dist in enumerate(state.dist_key_list):
+					state_got = dist.get().state.get()
+					self.response.write("%d) dist data: state = %s; number = %d\n" % (i, dist.get().state.get().abbr, dist.get().number))
 
-				key_list.append(ndb.Key(db_defs.State, 'States'))
-				db_State_list.append(db_defs.State(parent=key_list[i]))
+		elif self.request.get('count') == 'True':
 
-				db_State_list[i].abbr = our_state.abbr
-				db_State_list[i].quant_districts = our_state.quant_districts
-				db_State_list[i].quant_registered = our_state.quant_registered
-				db_State_list[i].quant_electors = our_state.quant_electors
-				db_State_list[i].dist_key_list = []
-				db_State_list[i].elector_key_list = []
+			count_qry = db_defs.Vote.query()
+			count = count_qry.count(Limit=None)
+			self.response.write("{ 'Vote Count' : %d }" % (count))
 
-				#db_State_list.append(db_State)
+		elif self.request.get('state'):
 
-			#db_State.put()
-			ndb.put_multi(db_State_list)
+			get_var = str(self.request.get('state'))
+			if len(get_var) > 2:
+				the_state = ndb.Key(urlsafe=get_var).get()
+			elif len(get_var) == 2:
+				#self.response.write("the state: %s" % (the_state.get().abbr))
+				#q = q.filter(MyModel._properties[kw] == v)
+				#self.response.write("get_var = %s" % (get_var))
+
+				q = db_defs.State.query(db_defs.State.abbr == get_var)
+				#self.response.write("db_defs.State.abbr = %s\tget_var = %s" % (db_defs.State.abbr))
+				the_state = q.fetch()[0]
+			result = the_state.to_dict()
+			#self.response.write(str(result))
+			#return
+			result['elector_key_list'] = [str(elector_key.urlsafe()) for elector_key in result['elector_key_list']]
+			result['dist_key_list'] = [str(dist_key.urlsafe()) for dist_key in result['dist_key_list']]
+			result['key'] = the_state.key.urlsafe()
+			json_dict = {the_state.abbr : result}
+			self.response.write(json.dumps(json_dict))
+			#self.response.write("Abbr: %s" % (state.abbr))
 
 
-"""
-			else:
-				#Using the post request variables, populate the members of Vote and enter it into the db as entity
-				db_State.abbr = (self.request.get('abbr'))
-				db_State.quant_districts = int(self.request.get('quant_districts'))
-				db_State.quant_electors = int(self.request.get('quant_electors'))
-				#db_State.dist_key_list = self.request.get('dist_key_list', allow_multiple=True)
-				#db_State.elector_key_list = self.request.get('elector_key_list', allow_multiple=True,)
 
-				#self.response.write('Wrote some stuff to database, ')
-				db_State.put()
-			"""
-class Districts(base_page.BaseHandler):
-	def __init__(self, request, response):
-		self.initialize(request, response) #forgot why this is here
+		elif self.request.get('all') == 'True':
 
-	def post(self):
-		self.response.write("this is a district post\n\n")
+			result_list = []
+			states_dict = {}
 
-		#Fill the states entity with pre loaded state values derived from json from api calls
-		if self.request.get('fill_all') == 'True':
+			states_qry = db_defs.State.query()
+			states = states_qry.fetch()
+			#states_dict = states.to_dict()
 
-			L = Lists()
-			container_class_defs.generate_all_states(L)
-			container_class_defs.generate_all_districts(L)
-			db_Dist_list = []
-			key_list = []
+			for state in states:
+				result_state_dict = {}
+				state_dict  = state.to_dict()
 
-			for i in range(0, 1):#, our_dist in enumerate(L.all_district_classes):
+				state_dict['elector_key_list'] = [elector_key.urlsafe() for elector_key in state_dict['elector_key_list']]
+				state_dict['dist_key_list'] = [dist_key.urlsafe() for dist_key in state_dict['dist_key_list']]
+				state_dict['key'] = state.key.urlsafe()
 
-				key_list.append(ndb.Key(db_defs.District, 'Districts'))
-				db_Dist_list.append(db_defs.State(parent=key_list[i]))
+				result_state_dict[state_dict['abbr']] = state_dict
 
-				our_dist = L.all_district_classes[i]
+				result_list.append(result_state_dict)
 
-				db_Dist_list[i].number = our_dist.number
-				db_Dist_list[i].state = our_dist.state
-				db_Dist_list[i].voters = []
+			states_dict['State'] = result_list
 
-				#db_Dist_list.append(db_State)
-
-			db_Dist_list[i].put()
-			#ndb.put_multi(db_Dist_list)
-			self.response.write("db writing complete\n\n")
+			self.response.write(json.dumps(states_dict))
