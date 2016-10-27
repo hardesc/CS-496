@@ -6,6 +6,7 @@ import container_class_defs
 from lists import Lists
 import sys
 import time
+import json
 
 
 class Admin(base_page.BaseHandler):
@@ -242,6 +243,46 @@ class Admin(base_page.BaseHandler):
 			count_qry = db_defs.Vote.query()
 			count = count_qry.count(Limit=None)
 			self.response.write("Vote Count: %d" % (count))
+
+		if self.request.get('state') == 'True':
+
+			state = db_defs.State.query().filter(db_defs.State.abbr == 'WI').fetch(1)
+			result = state[0].to_dict()
+			#self.response.write(str(result))
+
+			result['elector_key_list'] = [str(elector_key.id()) for elector_key in result['elector_key_list']]
+			result['dist_key_list'] = [str(dist_key.id()) for dist_key in result['dist_key_list']]
+			#state_dict = state[0].to_dict()
+			self.response.write(json.dumps(result))
+			#self.response.write("Abbr: %s" % (state.abbr))
+
+
+
+		if self.request.get('all') == 'True':
+
+			result_list = []
+			states_dict = {}
+
+			states_qry = db_defs.State.query()
+			states = states_qry.fetch()
+			#states_dict = states.to_dict()
+
+			for state in states:
+				result_state_dict = {}
+				state_dict  = state.to_dict()
+
+				state_dict['elector_key_list'] = [str(elector_key.id()) for elector_key in state_dict['elector_key_list']]
+				state_dict['dist_key_list'] = [str(dist_key.id()) for dist_key in state_dict['dist_key_list']]
+				state_dict['key'] = state.key.id()
+
+				result_state_dict[state_dict['abbr']] = state_dict
+
+				result_list.append(result_state_dict)
+
+			states_dict['State'] = result_list
+
+			self.response.write(json.dumps(states_dict))
+				
 
 	def nukeItAll(self):
 
