@@ -104,12 +104,12 @@ class Voter():
             self.id = 0
             while self.id in theLists.voterID_list or self.id == 0:
                 self.id = random.randrange(rand_range)
-                self.party = random.choice(['D', 'R', 'G', 'L', 'I', 'O'])
-                self.age = random.randrange(18, 105)
-                self.sex = random.choice(['M', 'F'])
-                self.income_lvl = random.randint(0, len(theLists.income_list) - 1)
-                self.ethnicity = random.sample([ i for i in range(len(theLists.ethnicity_list))], random.randint(1, len(theLists.ethnicity_list)))#pick a random combination of ethnicities
-                self.education_lvl = random.randint(0, len(theLists.education_lvl_list) - 1)
+            self.party = random.choice(['D', 'R', 'G', 'L', 'I', 'O'])
+            self.age = random.randrange(18, 105)
+            self.sex = random.choice(['M', 'F'])
+            self.income_lvl = random.randint(0, len(theLists.income_list) - 1)
+            self.ethnicity = random.sample([ i for i in range(len(theLists.ethnicity_list))], random.randint(1, len(theLists.ethnicity_list)))#pick a random combination of ethnicities
+            self.education_lvl = random.randint(0, len(theLists.education_lvl_list) - 1)
     
         else:
             self.id = None
