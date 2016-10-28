@@ -165,7 +165,6 @@ class Admin(base_page.BaseHandler):
 
 					#key_list.append(ndb.Key(db_defs.Vote, 'Votes'))
 					db_vote_list.append(db_defs.Vote())
-
 					
 					db_vote_list[i].voter_key = voter_key_dict[vote.voter_id]
 					db_vote_list[i].candidate = vote.candidate

@@ -34,7 +34,7 @@ class Districts(base_page.BaseHandler):
 			get_var = kwargs['district']
 
 			#condition that a specific district was passed into get_var, not "all"
-			if len(get_var) > 10 or len(get_var) == 1:
+			if len(get_var) > 10 or len(get_var) <= 2:
 
 				if len(get_var) > 10:
 					the_district = db_defs.District.get_by_id(int(get_var))
@@ -71,7 +71,7 @@ class Districts(base_page.BaseHandler):
 
 				for district in districts:
 					result_district_dict = {}
-					district_dict  = district.to_dict()
+					district_dict  = {str("%s District %d" % (distrit.state_key.get().abbr, district.number)) : district.to_dict()}
 
 					district_dict['vote_key_list'] = [vote_key.id() for vote_key in district_dict['vote_key_list']]
 					district_dict['state_key'] = district.state_key.id()
@@ -82,5 +82,6 @@ class Districts(base_page.BaseHandler):
 					result_list.append(result_district_dict)
 
 				districts_dict['District'] = result_list
+
 
 			self.response.write(json.dumps(districts_dict))
