@@ -21,12 +21,14 @@ class States(base_page.BaseHandler):
 				for i, dist in enumerate(state.dist_key_list):
 					state_got = dist.get().state.get()
 					self.response.write("%d) dist data: state = %s; number = %d\n" % (i, dist.get().state.get().abbr, dist.get().number))
-
+			return
+			
 		elif self.request.get('count') == 'True':
 
 			count_qry = db_defs.Vote.query()
 			count = count_qry.count(Limit=None)
 			self.response.write("{ 'Vote Count' : %d }" % (count))
+			return
 
 		elif self.request.get('state'):
 
