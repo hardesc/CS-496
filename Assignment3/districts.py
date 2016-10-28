@@ -34,9 +34,9 @@ class Districts(base_page.BaseHandler):
 			get_var = kwargs['district']
 
 			#condition that a specific district was passed into get_var, not "all"
-			if len(get_var) > 3 or len(get_var) == 2:
+			if len(get_var) > 10 or len(get_var) == 1:
 
-				if len(get_var) > 3:
+				if len(get_var) > 10:
 					the_district = db_defs.District.get_by_id(int(get_var))
 				elif len(get_var) == 2:
 					#self.response.write("the district: %s" % (the_district.get().abbr))
@@ -49,11 +49,11 @@ class Districts(base_page.BaseHandler):
 				result = the_district.to_dict()
 				#self.response.write(str(result))
 				#return
-				result['elector_key_list'] = [str(elector_key.id()) for elector_key in result['elector_key_list']]
-				result['dist_key_list'] = [str(dist_key.id()) for dist_key in result['dist_key_list']]
+				result['vote_key_list'] = [str(vote_key.id()) for vote_key in result['vote_key_list']]
+				result['state_key'] = the_district.state_key.id()
 				result['key'] = the_district.key.id()
 
-				districts_dict = {the_district.abbr : result}
+				districts_dict = {str("%s District %d" % (the_district.state_key.get().abbr, the_district.number)) : result}
 			#self.response.write(json.dumps(districts_dict))
 			#self.response.write("Abbr: %s" % (district.abbr))
 
@@ -73,7 +73,7 @@ class Districts(base_page.BaseHandler):
 					result_district_dict = {}
 					district_dict  = district.to_dict()
 
-					district_dict['vote_key_list'] = [elector_key.id() for elector_key in district_dict['vote_key_list']]
+					district_dict['vote_key_list'] = [vote_key.id() for vote_key in district_dict['vote_key_list']]
 					district_dict['state_key'] = district.state_key.id()
 					district_dict['key'] = district.key.id()
 
