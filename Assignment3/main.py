@@ -23,6 +23,9 @@ app = webapp2.WSGIApplication([
     ('/', 'base_page.BaseHandler'),
     ('/votes', 'votes.Votes'),
     ('/states', 'states.States'),
-    ('/districts', 'states.Districts'),
+    ('/districts', 'districts.Districts'),
     ('/admin', 'admin.Admin')
 ], debug=True)
+
+app.router.add(webapp2.Route(r'/states/<state:([0-9]+|[A-Z][A-Z]|all)><:/?>', 'states.States'))
+app.router.add(webapp2.Route(r'/districts/<district:([0-9]+|[A-Z][A-Z]|all)><:/?>', 'districts.Districts'))
