@@ -9,7 +9,7 @@ class States(base_page.BaseHandler):
 	def __init__(self, request, response):
 		self.initialize(request, response) #forgot why this is here
 
-	def get(self):
+	def get(self, **kwargs):
 
 		if self.request.get('test')  == 'True':
 
@@ -28,9 +28,9 @@ class States(base_page.BaseHandler):
 			count = count_qry.count(Limit=None)
 			self.response.write("{ 'Vote Count' : %d }" % (count))
 
-		elif self.request.get('state'):
+		elif 'state' in kwargs:
 
-			get_var = self.request.get('state')
+			get_var = kwargs['state']
 
 			#condition that a specific state was passed into get_var, not "all"
 			if len(get_var) > 3 or len(get_var) == 2:
@@ -58,27 +58,27 @@ class States(base_page.BaseHandler):
 
 
 
-		elif self.request.get('all') == 'True':
+			elif kwargs['state'] == 'all':
 
-			result_list = []
-			states_dict = {}
+				result_list = []
+				states_dict = {}
 
-			states_qry = db_defs.State.query()
-			states = states_qry.fetch()
-			#states_dict = states.to_dict()
+				states_qry = db_defs.State.query()
+				states = states_qry.fetch()
+				#states_dict = states.to_dict()
 
-			for state in states:
-				result_state_dict = {}
-				state_dict  = state.to_dict()
+				for state in states:
+					result_state_dict = {}
+					state_dict  = state.to_dict()
 
-				state_dict['elector_key_list'] = [elector_key.urlsafe() for elector_key in state_dict['elector_key_list']]
-				state_dict['dist_key_list'] = [dist_key.urlsafe() for dist_key in state_dict['dist_key_list']]
-				state_dict['key'] = state.key.urlsafe()
+					state_dict['elector_key_list'] = [elector_key.id() for elector_key in state_dict['elector_key_list']]
+					state_dict['dist_key_list'] = [dist_key.id() for dist_key in state_dict['dist_key_list']]
+					state_dict['key'] = state.key.id()
 
-				result_state_dict[state_dict['abbr']] = state_dict
+					result_state_dict[state_dict['abbr']] = state_dict
 
-				result_list.append(result_state_dict)
+					result_list.append(result_state_dict)
 
-			states_dict['State'] = result_list
+				states_dict['State'] = result_list
 
-		self.response.write(json.dumps(states_dict))
+			self.response.write(json.dumps(states_dict))
