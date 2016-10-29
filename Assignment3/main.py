@@ -31,3 +31,4 @@ app.router.add(webapp2.Route(r'/states/<state:([0-9]+|[A-Z][A-Z]|all)><:/?>', 's
 app.router.add(webapp2.Route(r'/districts/<district:([0-9]+|[A-Z][A-Z]|all)><:/?>', 'districts.Districts'))
 app.router.add(webapp2.Route(r'/districts/<district:([0-9]+|[A-Z][A-Z]|all)>/states/<state:([0-9]+|[A-Z][A-Z]|all)><:/?>', 'districts.Districts_by_State'))
 app.router.add(webapp2.Route(r'/districts/states/<state:([0-9]+|[A-Z][A-Z])><:/?>', 'districts.Districts_by_State'))
+app.router.add(webapp2.Route(r'/votes/<vote:([0-9]+|all)><:/?>', 'votes.Votes'))

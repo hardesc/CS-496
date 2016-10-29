@@ -2,45 +2,86 @@ import webapp2
 import base_page
 from google.appengine.ext import ndb
 import db_defs
-import ballot
+import container_class_defs
+import json
 
-class Votes(base_page2.BaseHandler):
+class Votes(base_page.BaseHandler):
     def __init__(self, request, response):
         self.initialize(request, response) #forgot why this is here
-        self.template_values = {}
 
-    #refefines render from base_page2.BaseHandler to include template variables when data has been entered.
-    #gets each database entry and stores them as template variables, calls render with template variables
-    def render(self, page):
-
-        self.template_values['votes'] = [{'VID':vq.VID, 'candidate':vq.candidate, 'issues':vq.issues, 'email':vq.email, 'phone':vq.phone, 'key':vq.key.urlsafe()} for vq in db_defs.Vote.query().fetch()]
-
-        base_page2.BaseHandler.render(self, page, self.template_values)
-    
-    #this method only used when deleting a record    
-    def get(self):
-        self.template_values['cast'] = False
-
-        if self.request.get('delete') == 'true':
-            url_key = self.request.get('key')
-            delete_key = ndb.Key(urlsafe=url_key)
-            delete_vote = delete_key.get()
-            delete_vote.key.delete()
+    def get(self, **kwargs):
 
 
-        self.render('votes.html')
+        if kwargs['vote'] == 'all':
 
-    def post(self):
+            count_qry = db_defs.Vote.query()
+            count = count_qry.count(Limit=None)
+            self.response.write("{ 'Vote Count' : %d }" % (count))
 
-        self.render('votes.html')
+        elif len(kwargs['vote']) > 4:
 
-class votes:
-    def __init__(self, id, candidate, issues, email, phone, key):
-        self.id = id
-        self.candidate = candidate
-        self.issues = issues
-        """for issue in issues:
-            self.issues.append(issue)"""
-        self.email = email
-        self.phone = phone
-        self.key = key
+            get_var = kwargs['district']
+
+            #condition that a specific district was passed into get_var, not "all"
+
+            if len(get_var) > 10:
+                the_district = db_defs.District.get_by_id(int(get_var))
+
+
+                districts_dict = {str("%s District %d" % (the_district.state_key.get().abbr, the_district.number)) : dist_keys_to_ids(the_district)}
+
+            elif len(get_var) == 2 or len(get_var) == 1:
+
+                districts_dict = {}
+                districts = db_defs.District.query(db_defs.District.number == int(get_var)).fetch()
+                districts_dict = dist_list_to_dict(districts)
+
+            elif kwargs['district'] == 'all':
+
+                districts_dict = {}
+                districts = db_defs.District.query().fetch()
+                districts_dict['District'] = dist_list_to_dict(districts)
+
+            self.response.write(json.dumps(districts_dict))
+
+class Districts_by_State(base_page.BaseHandler):
+    def __init__(self, request, response):
+        self.initialize(request, response) #forgot why this is here
+
+    def get(self, **kwargs):
+
+        self.response.write("Districts_by_State Get: 'state' = %s\n" % (kwargs['state']))
+        if kwargs['state']:
+            get_var = kwargs['state']
+            if len(get_var) == 2:
+
+                the_state = db_defs.State.query(db_defs.State.abbr == get_var).fetch(1)[0]
+                districts = db_defs.District.query(db_defs.District.state_key == the_state.key).fetch()
+
+            elif len(get_var) > 2:
+
+                the_state = db_defs.State.get_by_id(int(get_var))
+                districts = [dist.get() for dist in the_state.dist_key_list]
+
+            self.response.write(json.dumps(dist_list_to_dict(districts)))
+        else:
+            self.response.write("error")
+
+
+def dist_keys_to_ids(district):
+
+    district_dict = district.to_dict()
+
+    district_dict['vote_key_list'] = [vote_key.id() for vote_key in district_dict['vote_key_list']]
+    district_dict['state_key'] = district.state_key.id()
+    district_dict['key'] = district.key.id()
+
+    return district_dict
+
+def dist_list_to_dict(districts):
+
+    districts_dict = {}
+    for district in districts:
+        districts_dict[str("%s District %d" % (district.state_key.get().abbr, district.number))] = dist_keys_to_ids(district)
+
+    return districts_dict
