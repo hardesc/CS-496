@@ -74,6 +74,7 @@ class Admin(base_page.BaseHandler):
 						state_dist_keys_dict[state_key] = dist_key_list.append(dist_key)
 
 				state_dist_keys_dict[state_key] = dist_key_list
+
 				state_to_put = state_key.get()
 				state_to_put.dist_key_list = dist_key_list
 
@@ -98,8 +99,8 @@ class Admin(base_page.BaseHandler):
 				db_EC_list[i].evoter_id = our_ec.evoter_id
 				db_EC_list[i].state_key = state_key_dict[str(our_ec.state.abbr)]
 
-				if self.request.get('rand_ec_votes') == 'True':
-					db_EC_list[i].candidate = our_ec.candidate
+
+				db_EC_list[i].candidate = our_ec.candidate
 				#db_Dist_list[i].voters = []
 
 			ec_keys = ndb.put_multi(db_EC_list)#batch put all district keys in the db, store the keys in dist_keys
@@ -131,90 +132,114 @@ class Admin(base_page.BaseHandler):
 			#============================================VOTERS============================================
 			#=====================================GET THE VOTERS FROM CONTAINERS==========================
 		if self.request.get('fill_votes') == 'True':
-			if L not in locals():
+			if not self.request.get('fill_all'):
 				L = Lists()
-			if self.request.get('rand_voters') == 'True':
-				n = int(self.request.get('num'))
-				container_class_defs.generateRandVoters(n, L)
-				container_class_defs.generateRandVotes(L)
+				L.voterID_list = [voter.voter_id for voter in db_defs.Voter.query().fetch()]
+				container_class_defs.generate_all_states(L)
+				container_class_defs.generate_all_districts(L)
+				container_class_defs.generate_all_electoral_college(L)
 
-				db_voter_list = []
-				key_list = []
+			n = int(self.request.get('num'))
 
-				for i, voter in enumerate(L.all_voter_classes):
+			#set range of voter ids to be randomly selected from to be either 10 x the size of the voterID list 
+			#or 10 * the size of the number of votes to be generated if none are generated yet
+			if (len(L.voterID_list) > 0):
+				n_range = len(L.voterID_list) * 10
+			else:
+				n_range = n * 10
+			container_class_defs.generateRandVoters(n, n_range, L)
+			container_class_defs.generateRandVotes(L)
 
-					#key_list.append(ndb.Key(db_defs.Voter, 'Voters'))
-					db_voter_list.append(db_defs.Voter())
+			db_voter_list = []
+			key_list = []
 
-					db_voter_list[i].voter_id = voter.id
-					db_voter_list[i].party = voter.party
-					db_voter_list[i].age = voter.age
-					db_voter_list[i].sex = voter.sex == 'M'
-					db_voter_list[i].income_lvl = voter.income_lvl
-					db_voter_list[i].ethnicity = voter.ethnicity
-					db_voter_list[i].education_lvl = voter.education_lvl
+			for i, voter in enumerate(L.all_voter_classes):
 
-				future_voter_keys = ndb.put_multi_async(db_voter_list)#batch put all voter keys in the db
+				#key_list.append(ndb.Key(db_defs.Voter, 'Voters'))
+				db_voter_list.append(db_defs.Voter())
 
-				voter_key_dict = {key.get_result().get().voter_id: key.get_result() for key in future_voter_keys}
+				db_voter_list[i].voter_id = voter.id
+				db_voter_list[i].party = voter.party
+				db_voter_list[i].age = voter.age
+				db_voter_list[i].sex = voter.sex == 'M'
+				db_voter_list[i].income_lvl = voter.income_lvl
+				db_voter_list[i].ethnicity = voter.ethnicity
+				db_voter_list[i].education_lvl = voter.education_lvl
+
+			del L.all_voter_classes
+
+			future_voter_keys = ndb.put_multi_async(db_voter_list)#batch put all voter keys in the db
+
+			voter_key_dict = {key.get_result().get().voter_id: key.get_result() for key in future_voter_keys}
 
 
-				i = 0
-				db_vote_list = []
-				for i, vote in enumerate(L.all_vote_classes):
+			i = 0
+			db_vote_list = []
+			
+			#create the necessary dicts and lists if only generating new votes, not generating votes from scratch
+			if 'state_key_dict' not in locals():
+				states = db_defs.State.query().fetch()
+				dists = db_defs.District.query().fetch()
+				dist_keys = [dist.key for dist in dists]
+				state_key_dict = {state.abbr: state.key for state in states}
+				state_dist_keys_dict = {state.key : state.dist_key_list for state in states}
 
-					#key_list.append(ndb.Key(db_defs.Vote, 'Votes'))
-					db_vote_list.append(db_defs.Vote())
-					
-					db_vote_list[i].voter_key = voter_key_dict[vote.voter_id]
-					db_vote_list[i].candidate = vote.candidate
-					db_vote_list[i].issues = vote.issues
-					db_vote_list[i].state_key = state_key_dict[vote.state]
-					
-					#self.response.write("State %d:\ntype: %s\n\n" % (i, type(db_vote_list[i].state, quant_districts)))
-					dist_key_list = []
-					dist_key_list = state_dist_keys_dict[db_vote_list[i].state_key]
-					for dist in dist_key_list:
-						if dist.get().number == vote.district:
-							db_vote_list[i].dist_key = dist
+			for i, vote in enumerate(L.all_vote_classes):
 
-				future_vote_key_list = ndb.put_multi_async(db_vote_list)
+				#key_list.append(ndb.Key(db_defs.Vote, 'Votes'))
+				db_vote_list.append(db_defs.Vote())
+				
+				db_vote_list[i].voter_key = voter_key_dict[vote.voter_id]
+				db_vote_list[i].candidate = vote.candidate
+				db_vote_list[i].issues = vote.issues
+				db_vote_list[i].state_key = state_key_dict[vote.state]
+				
+				#self.response.write("State %d:\ntype: %s\n\n" % (i, type(db_vote_list[i].state, quant_districts)))
+				dist_key_list = []
+				dist_key_list = state_dist_keys_dict[db_vote_list[i].state_key]
+				for dist in dist_key_list:
+					if dist.get().number == vote.district:
+						db_vote_list[i].dist_key = dist
 
-				#===================================PUT ALL VOTE_KEYS IN VOTERS==================================================
-				db_voter_list = []
+			del L.all_vote_classes
+
+			future_vote_key_list = ndb.put_multi_async(db_vote_list)
+
+			#===================================PUT ALL VOTE_KEYS IN VOTERS==================================================
+			db_voter_list = []
+			for vote_key in future_vote_key_list:
+				vote_key.get_result().get().voter_key.get().vote_key = vote_key.get_result()
+				db_voter_list.append(vote_key.get_result().get().voter_key.get())
+
+				self.response.write("Voter id: %d\n" % (db_voter_list[-1].voter_id))
+
+			#time.sleep(30)
+			future_voter_key_list = ndb.put_multi(db_voter_list)
+
+			#===================================PUT ALL VOTER_KEYS IN DISTRICTS==================================================
+			"""
+			state_key_dict
+			state_dist_keys_dict
+			"""
+
+			dist_vote_keys_dict = {}
+			dist_to_put_list = []
+			for dist_key in dist_keys:
+				vote_key_list = []
 				for vote_key in future_vote_key_list:
-					vote_key.get_result().get().voter_key.get().vote_key = vote_key.get_result()
-					db_voter_list.append(vote_key.get_result().get().voter_key.get())
+					if vote_key.get_result().get().dist_key == dist_key:
+						dist_vote_keys_dict[dist_key] = vote_key_list.append(vote_key.get_result())
 
-					self.response.write("Voter id: %d\n" % (db_voter_list[-1].voter_id))
+				dist_vote_keys_dict[dist_key] = vote_key_list
+				dist_to_put = dist_key.get()
+				dist_to_put.vote_key_list = vote_key_list
 
-				#time.sleep(30)
-				future_voter_key_list = ndb.put_multi(db_voter_list)
+				dist_to_put_list.append(dist_to_put)
 
-				#===================================PUT ALL VOTER_KEYS IN DISTRICTS==================================================
-				"""
-				state_key_dict
-				state_dist_keys_dict
-				"""
+				#state_to_put.put()
+				#break
 
-				dist_vote_keys_dict = {}
-				dist_to_put_list = []
-				for dist_key in dist_keys:
-					vote_key_list = []
-					for vote_key in future_vote_key_list:
-						if vote_key.get_result().get().dist_key == dist_key:
-							dist_vote_keys_dict[dist_key] = vote_key_list.append(vote_key.get_result())
-
-					dist_vote_keys_dict[dist_key] = vote_key_list
-					dist_to_put = dist_key.get()
-					dist_to_put.vote_key_list = vote_key_list
-
-					dist_to_put_list.append(dist_to_put)
-
-					#state_to_put.put()
-					#break
-
-				ndb.put_multi(dist_to_put_list)
+			ndb.put_multi(dist_to_put_list)
 
 
 

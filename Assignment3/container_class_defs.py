@@ -265,9 +265,9 @@ def testRandVotes(theLists, decode=True):
             vote.db_decode_all(theLists)
         vote.print_Vote()
 
-def generateRandVoters(n, theLists):
+def generateRandVoters(n, n_range, theLists):
     for i in range(0, n):
-        a_voter = Voter(theLists, n * 10)
+        a_voter = Voter(theLists, n_range)
         theLists.all_voter_classes.append(a_voter)
 
 def testRandVoters(theLists, decode=True):
