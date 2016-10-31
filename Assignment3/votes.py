@@ -31,15 +31,6 @@ class Votes(base_page.BaseHandler):
                 vote_dict = {str("Vote# %d" % (the_vote.key.id())) : format_vote(the_vote)}
 
             self.response.write(json.dumps(vote_dict))
-    """
-    class Vote(ndb.Model):
-        voter_key = ndb.KeyProperty(required=True)#must be changed to true after testing complete
-        candidate = ndb.IntegerProperty(required=True)
-        issues = ndb.IntegerProperty(repeated=True)
-        dist_key = ndb.KeyProperty(required=False)
-        state_key = ndb.KeyProperty(required=False)
-    """
-
 
 
     def put(self, **kwargs):
@@ -58,10 +49,30 @@ class Votes(base_page.BaseHandler):
                 the_candidate = int(self.request.get('candidate'))
                 if the_candidate >= 0 and the_candidate <= 4:
                     the_vote.candidate = int(self.request.get('candidate'))
-                    the_vote.put()
                 else:
                     self.response.write("Error: invalid put request")
 
+            if self.request.get('issues'):
+                issues = self.request.get('issues')
+                the_vote.issues = []
+                for issue in issues:
+                    the_vote.issues.append(int(issue))
+                
+
+            if self.request.get('state_key'):
+                the_key = int(self.request.get('state_key'))
+                the_State = db_defs.State.get_by_id(int(the_key))
+                the_vote.state_key = the_State.key
+
+            if self.request.get('dist_key'):
+                the_key = int(self.request.get('dist_key'))
+                the_Dist = db_defs.District.get_by_id(int(the_key))
+                the_vote.dist_key = the_Dist.key
+
+            the_vote.put()
+
+        else:
+            self.response.write("Error: invalid put request")
 
 def format_vote(vote):
 
