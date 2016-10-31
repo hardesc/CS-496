@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 import db_defs
 import container_class_defs
 import json
+import lists
 
 class Votes(base_page.BaseHandler):
     def __init__(self, request, response):
@@ -20,68 +21,31 @@ class Votes(base_page.BaseHandler):
 
         elif len(kwargs['vote']) > 4:
 
-            get_var = kwargs['district']
+            get_var = kwargs['vote']
 
             #condition that a specific district was passed into get_var, not "all"
 
             if len(get_var) > 10:
-                the_district = db_defs.District.get_by_id(int(get_var))
+                the_vote = db_defs.Vote.get_by_id(int(get_var))
+
+                vote_dict = {str("Vote# %d" % (the_vote.key.id())) : format_vote(the_vote)}
+
+            self.response.write(json.dumps(vote_dict))
 
 
-                districts_dict = {str("%s District %d" % (the_district.state_key.get().abbr, the_district.number)) : dist_keys_to_ids(the_district)}
+def format_vote(vote):
 
-            elif len(get_var) == 2 or len(get_var) == 1:
+    L = lists.Lists()
 
-                districts_dict = {}
-                districts = db_defs.District.query(db_defs.District.number == int(get_var)).fetch()
-                districts_dict = dist_list_to_dict(districts)
+    vote_dict = vote.to_dict()
+    vote_dict['state_key'] = vote.state_key.id()
+    vote_dict['dist_key'] = vote.dist_key.id()
+    vote_dict['voter_key'] = vote.voter_key.id()
 
-            elif kwargs['district'] == 'all':
+    for i, issue in enumerate(vote.issues):
+        vote_dict['issues'][i] = L.issues_list[issue]
 
-                districts_dict = {}
-                districts = db_defs.District.query().fetch()
-                districts_dict['District'] = dist_list_to_dict(districts)
-
-            self.response.write(json.dumps(districts_dict))
-
-class Districts_by_State(base_page.BaseHandler):
-    def __init__(self, request, response):
-        self.initialize(request, response) #forgot why this is here
-
-    def get(self, **kwargs):
-
-        self.response.write("Districts_by_State Get: 'state' = %s\n" % (kwargs['state']))
-        if kwargs['state']:
-            get_var = kwargs['state']
-            if len(get_var) == 2:
-
-                the_state = db_defs.State.query(db_defs.State.abbr == get_var).fetch(1)[0]
-                districts = db_defs.District.query(db_defs.District.state_key == the_state.key).fetch()
-
-            elif len(get_var) > 2:
-
-                the_state = db_defs.State.get_by_id(int(get_var))
-                districts = [dist.get() for dist in the_state.dist_key_list]
-
-            self.response.write(json.dumps(dist_list_to_dict(districts)))
-        else:
-            self.response.write("error")
+    vote_dict['candidate'] = L.candidate_list[vote.candidate]
 
 
-def dist_keys_to_ids(district):
-
-    district_dict = district.to_dict()
-
-    district_dict['vote_key_list'] = [vote_key.id() for vote_key in district_dict['vote_key_list']]
-    district_dict['state_key'] = district.state_key.id()
-    district_dict['key'] = district.key.id()
-
-    return district_dict
-
-def dist_list_to_dict(districts):
-
-    districts_dict = {}
-    for district in districts:
-        districts_dict[str("%s District %d" % (district.state_key.get().abbr, district.number))] = dist_keys_to_ids(district)
-
-    return districts_dict
+    return vote_dict
