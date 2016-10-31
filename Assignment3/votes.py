@@ -31,6 +31,36 @@ class Votes(base_page.BaseHandler):
                 vote_dict = {str("Vote# %d" % (the_vote.key.id())) : format_vote(the_vote)}
 
             self.response.write(json.dumps(vote_dict))
+    """
+    class Vote(ndb.Model):
+        voter_key = ndb.KeyProperty(required=True)#must be changed to true after testing complete
+        candidate = ndb.IntegerProperty(required=True)
+        issues = ndb.IntegerProperty(repeated=True)
+        dist_key = ndb.KeyProperty(required=False)
+        state_key = ndb.KeyProperty(required=False)
+    """
+
+
+
+    def put(self, **kwargs):
+
+        if len(kwargs['vote']) > 5:
+
+            the_vote = db_defs.Vote.get_by_id(int(kwargs['vote']))
+
+            if self.request.get('voter_key'):
+                the_key = int(self.request.get('voter_key'))
+                the_Voter = db_defs.Voter.get_by_id(int(the_key))
+                the_vote.voter_key = the_Voter.key
+
+            if self.request.get('candidate'):
+                self.response.write("candidate = %d\n" % (int(self.request.get('candidate'))))
+                the_candidate = int(self.request.get('candidate'))
+                if the_candidate >= 0 and the_candidate <= 4:
+                    the_vote.candidate = int(self.request.get('candidate'))
+                    the_vote.put()
+                else:
+                    self.response.write("Error: invalid put request")
 
 
 def format_vote(vote):
