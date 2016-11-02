@@ -268,3 +268,6 @@ class Admin(base_page.BaseHandler):
 		ent_count = Entity_qry.count(limit=None, options=qo)
 		if (ent_count):
 			ndb.delete_multi(Entity_qry.fetch(ent_count, options=qo))
+
+	def get(self):
+		self.response.write("admin.py GET request successful")
