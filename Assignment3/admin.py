@@ -14,6 +14,7 @@ class Admin(base_page.BaseHandler):
 		self.initialize(request, response) #forgot why this is here
 
 	def post(self):
+		state_key_dict = None
 
 		#===============================FULL DATABASE LOAD FROM SCRATCH==========================
 		if self.request.get('fill_all') == 'True':
@@ -177,11 +178,12 @@ class Admin(base_page.BaseHandler):
 			db_vote_list = []
 			
 			#create the necessary dicts and lists if only generating new votes, not generating votes from scratch
-			if 'state_key_dict' not in locals():
+			if state_key_dict is None:
+
 				states = db_defs.State.query().fetch()
 				dists = db_defs.District.query().fetch()
 				dist_keys = [dist.key for dist in dists]
-				state_key_dict = {state.abbr: state.key for state in states}
+				state_key_dict = {str(state.abbr) : state.key for state in states}
 				state_dist_keys_dict = {state.key : state.dist_key_list for state in states}
 
 			for i, vote in enumerate(L.all_vote_classes):
