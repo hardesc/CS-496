@@ -264,19 +264,9 @@ class Admin(base_page.BaseHandler):
 
 	def nuke(self, Entity):
 		Entity_qry = Entity.query()
-<<<<<<< HEAD
 		ent_count = 1
 		while ent_count > 0:
 			qo = ndb.QueryOptions(keys_only=True)
 			ent_count = Entity_qry.count(limit=1000, options=qo)
 			if (ent_count):
 				ndb.delete_multi(Entity_qry.fetch(ent_count, options=qo))
-=======
-		qo = ndb.QueryOptions(keys_only=True)
-		ent_count = Entity_qry.count(limit=None, options=qo)
-		if (ent_count):
-			ndb.delete_multi(Entity_qry.fetch(ent_count, options=qo))
-
-	def get(self):
-		self.response.write("admin.py GET request successful")
->>>>>>> 48456556b1f476aecd9dc6cf1bf9f7f7afacacb0
