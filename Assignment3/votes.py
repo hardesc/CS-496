@@ -30,7 +30,7 @@ class Votes(base_page.BaseHandler):
 
                 vote_dict = {str("Vote# %d" % (the_vote.key.id())) : format_vote(the_vote)}
 
-            self.response.write(json.dumps(vote_dict), indent=4)
+            self.response.write(json.dumps(vote_dict, indent=4))
 
 
     def put(self, **kwargs):
