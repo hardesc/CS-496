@@ -13,7 +13,7 @@ class Voters(base_page.BaseHandler):
     def get(self, **kwargs):
 
 
-        if kwargs['voter'] == 'all':
+        if kwargs['voter'] == 'count':
 
             count_qry = db_defs.Voter.query()
             count = count_qry.count(Limit=None)
