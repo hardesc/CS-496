@@ -11,8 +11,7 @@ class Votes(base_page.BaseHandler):
         self.initialize(request, response) #forgot why this is here
 
     def get(self, **kwargs):
-
-
+        self.response.write("in Votes class get method\n")
         if kwargs['vote'] == 'count':
 
             count_qry = db_defs.Vote.query()
@@ -90,3 +89,18 @@ def format_vote(vote):
 
 
     return vote_dict
+
+class Votes_by_District(base_page.BaseHandler):
+    def __init__(self, request, response):
+        self.initialize(request, response) #forgot why this is here
+
+    def get(self, **kwargs):
+
+        if kwargs['dist_vote'] == 'count':
+            dist_qry = db_defs.District.query()
+            dists = dist_qry.fetch()
+            count = 0
+            for dist in dists:
+                count += len(dist.vote_key_list)
+
+            self.response.write("{ 'District Vote Count' : %d }" % (count))
