@@ -83,4 +83,4 @@ class States(base_page.BaseHandler):
 
 				states_dict['State'] = result_list
 
-			self.response.write(json.dumps(states_dict))
+			self.response.write(json.dumps(states_dict), indent=4, sort_keys=True)

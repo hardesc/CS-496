@@ -30,7 +30,7 @@ class Voters(base_page.BaseHandler):
 
                 voter_dict = {str("Voter# %d" % (the_voter.key.id())) : format_voter(the_voter)}
 
-            self.response.write(json.dumps(voter_dict))
+            self.response.write(json.dumps(voter_dict), indent=4)
 
 
 def format_voter(voter):
