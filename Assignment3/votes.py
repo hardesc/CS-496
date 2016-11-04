@@ -11,7 +11,7 @@ class Votes(base_page.BaseHandler):
         self.initialize(request, response) #forgot why this is here
 
     def get(self, **kwargs):
-        self.response.write("in Votes class get method\n")
+
         if kwargs['vote'] == 'count':
 
             count_qry = db_defs.Vote.query()

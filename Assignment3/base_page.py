@@ -14,6 +14,7 @@ class BaseHandler(webapp2.RequestHandler):
                 "vote_count_url" : "https://cs496-assignment3-148322.appspot.com/votes/all",
                 "single_vote_url" : "https://cs496-assignment3-148322.appspot.com/votes/{vote_key}",
                 "voter_count_url" : "https://cs496-assignment3-148322.appspot.com/voters/all",
+                "voter_count_by_district_url" : "https://cs496-assignment3-148322.appspot.com/votes/districts/count"
                 "single_voter_url" : "https://cs496-assignment3-148322.appspot.com/voters/{voter_key}",
                 "states_url" : "https://cs496-assignment3-148322.appspot.com/states/all",
                 "single_state_url" : "https://cs496-assignment3-148322.appspot.com/states/{state_key}",
