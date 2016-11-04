@@ -39,7 +39,7 @@ class Electors(base_page.BaseHandler):
 
             elector_dict = {str("Elector# %d" % (the_elector.key.id())) : format_elector(the_elector)}
 
-        self.response.write(json.dumps(elector_dict))
+        self.response.write(json.dumps(elector_dict, indent=4))
 
 
 def format_elector(elector):

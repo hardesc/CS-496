@@ -198,14 +198,7 @@ class Admin(base_page.BaseHandler):
 				db_vote_list[i].state_key = state_key_dict[vote.state]
 				dist_dict = state_dist_keys_dict[db_vote_list[i].state_key]
 				db_vote_list[i].dist_key = dist_dict[vote.district]
-				"""
-				#self.response.write("State %d:\ntype: %s\n\n" % (i, type(db_vote_list[i].state, quant_districts)))
-				dist_key_list = []
-				dist_key_list = state_dist_keys_dict[db_vote_list[i].state_key]
-				for dist in dist_key_list:
-					if dist.get().number == vote.district:
-						db_vote_list[i].dist_key = dist
-				"""
+
 			del L.all_vote_classes
 
 			future_vote_key_list = ndb.put_multi_async(db_vote_list)
@@ -222,28 +215,7 @@ class Admin(base_page.BaseHandler):
 			future_voter_key_list = ndb.put_multi(db_voter_list)
 
 			#===================================PUT ALL VOTER_KEYS IN DISTRICTS==================================================
-			"""
-			state_key_dict
-			state_dist_keys_dict
-			"""
-			"""
-			dist_vote_keys_dict = {}
-			dist_to_put_list = []
-			for dist_key in dist_keys:
-				vote_key_list = []
-				for vote_key in future_vote_key_list:
-					if vote_key.get_result().get().dist_key == dist_key:
-						dist_vote_keys_dict[dist_key] = vote_key_list.append(vote_key.get_result())
 
-				dist_vote_keys_dict[dist_key] = vote_key_list
-				dist_to_put = dist_key.get()
-				dist_to_put.vote_key_list = vote_key_list
-
-				dist_to_put_list.append(dist_to_put)
-
-				#state_to_put.put()
-				#break
-			"""
 			dist_to_put_list = []
 			for future_vote_key in future_vote_key_list:
 				vote_key = future_vote_key.get_result()
