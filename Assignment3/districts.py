@@ -4,6 +4,7 @@ from google.appengine.ext import ndb
 import db_defs
 import container_class_defs
 import json
+from pprint import pprint
 
 class Districts(base_page.BaseHandler):
 	def __init__(self, request, response):
@@ -42,7 +43,7 @@ class Districts(base_page.BaseHandler):
 				districts = db_defs.District.query().fetch()
 				districts_dict['District'] = dist_list_to_dict(districts)
 
-			self.response.write(json.dumps(districts_dict))
+			self.response.write(json.dumps(districts_dict, indent=4, sort_keys=True))
 
 class Districts_by_State(base_page.BaseHandler):
 	def __init__(self, request, response):
@@ -63,7 +64,7 @@ class Districts_by_State(base_page.BaseHandler):
 				the_state = db_defs.State.get_by_id(int(get_var))
 				districts = [dist.get() for dist in the_state.dist_key_list]
 
-			self.response.write(json.dumps(dist_list_to_dict(districts)))
+			self.response.write(json.dumps(dist_list_to_dict(districts), indent=4, sort_keys=True))
 		else:
 			self.response.write("error")
 

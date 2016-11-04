@@ -74,7 +74,7 @@ class Admin(base_page.BaseHandler):
 					if dist_key.get().state_key == state_key:
 						state_dist_keys_dict[state_key] = dist_key_list.append(dist_key)
 
-				state_dist_keys_dict[state_key] = dist_key_list
+				state_dist_keys_dict[state_key] = {dist.get().number : dist for dist in dist_key_list}
 
 				state_to_put = state_key.get()
 				state_to_put.dist_key_list = dist_key_list
@@ -145,7 +145,7 @@ class Admin(base_page.BaseHandler):
 			#set range of voter ids to be randomly selected from to be either 10 x the size of the voterID list 
 			#or 10 * the size of the number of votes to be generated if none are generated yet
 			if (len(L.voterID_list) > 0):
-				n_range = len(L.voterID_list) * 10
+				n_range = (len(L.voterID_list) + n) * 10
 			else:
 				n_range = n * 10
 			container_class_defs.generateRandVoters(n, n_range, L)
@@ -180,11 +180,12 @@ class Admin(base_page.BaseHandler):
 			#create the necessary dicts and lists if only generating new votes, not generating votes from scratch
 			if state_key_dict is None:
 
-				states = db_defs.State.query().fetch()
-				dists = db_defs.District.query().fetch()
-				dist_keys = [dist.key for dist in dists]
-				state_key_dict = {str(state.abbr) : state.key for state in states}
-				state_dist_keys_dict = {state.key : state.dist_key_list for state in states}
+				states = db_defs.State.query().fetch(keys_only=True)
+				dists = db_defs.District.query().fetch(keys_only=True)
+				dist_keys = [dist for dist in dists]
+				state_key_dict = {state.get().abbr : state for state in states}
+				state_dist_keys_dict = {state : {dist.get().number : dist for dist in state.get().dist_key_list} for state in states}
+
 
 			for i, vote in enumerate(L.all_vote_classes):
 
@@ -195,14 +196,16 @@ class Admin(base_page.BaseHandler):
 				db_vote_list[i].candidate = vote.candidate
 				db_vote_list[i].issues = vote.issues
 				db_vote_list[i].state_key = state_key_dict[vote.state]
-				
+				dist_dict = state_dist_keys_dict[db_vote_list[i].state_key]
+				db_vote_list[i].dist_key = dist_dict[vote.district]
+				"""
 				#self.response.write("State %d:\ntype: %s\n\n" % (i, type(db_vote_list[i].state, quant_districts)))
 				dist_key_list = []
 				dist_key_list = state_dist_keys_dict[db_vote_list[i].state_key]
 				for dist in dist_key_list:
 					if dist.get().number == vote.district:
 						db_vote_list[i].dist_key = dist
-
+				"""
 			del L.all_vote_classes
 
 			future_vote_key_list = ndb.put_multi_async(db_vote_list)
@@ -223,7 +226,7 @@ class Admin(base_page.BaseHandler):
 			state_key_dict
 			state_dist_keys_dict
 			"""
-
+			"""
 			dist_vote_keys_dict = {}
 			dist_to_put_list = []
 			for dist_key in dist_keys:
@@ -240,6 +243,14 @@ class Admin(base_page.BaseHandler):
 
 				#state_to_put.put()
 				#break
+			"""
+			dist_to_put_list = []
+			for future_vote_key in future_vote_key_list:
+				vote_key = future_vote_key.get_result()
+				the_dist = vote_key.get().dist_key.get()
+				the_dist.vote_key_list.append(vote_key)
+				if the_dist not in dist_to_put_list:
+					dist_to_put_list.append(the_dist)
 
 			ndb.put_multi(dist_to_put_list)
 
