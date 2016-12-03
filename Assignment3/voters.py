@@ -49,7 +49,10 @@ class Voters(base_page.BaseHandler):
 
             self.response.write("voter value: %s\n\n" % (str(voter)))
 
-            self.response.write(json.dumps({ "ID_exists" :  (voter != None), "has_pass" : (voter.password != None) }))
+            if voter != None:
+                self.response.write(json.dumps({ "ID_exists" :  True, "has_pass" : (voter.password != None) }))
+            else:
+                self.response.write(json.dumps({ "ID_exists" :  False }))
 
         #condition that id and password were both entered (ensure that password matches voterID)
         else:
