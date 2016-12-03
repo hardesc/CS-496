@@ -57,7 +57,7 @@ class Voters(base_page.BaseHandler):
         #condition that id and password were both entered (ensure that password matches voterID)
         else:
 
-            self.response.write(json.dumps({"VoterAuth": (voter.password == self.request.get('pass'))}))
+            self.response.write(json.dumps({"VoterAuth": (voter.password == self.request.get('pass')), "key" : voter.key.id()}))
 
     #create a single new voter or update an existing voter
     def put(self):
