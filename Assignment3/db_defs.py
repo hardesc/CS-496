@@ -36,3 +36,4 @@ class Voter(ndb.Model):
 	income_lvl = ndb.IntegerProperty(required=True)
 	ethnicity = ndb.IntegerProperty(repeated=True)
 	education_lvl = ndb.IntegerProperty(required=True)
+	password = ndb.StringProperty(required=False)

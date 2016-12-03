@@ -132,7 +132,11 @@ class Admin(base_page.BaseHandler):
 
 			#============================================VOTERS============================================
 			#=====================================GET THE VOTERS FROM CONTAINERS==========================
+
+		#condition that the parameter to generate a number of random votes has been set to 
 		if self.request.get('fill_votes') == 'True':
+
+			#condition that states, districts, and electoral college entities have not yet been generated here and need to be
 			if not self.request.get('fill_all'):
 				L = Lists()
 				L.voterID_list = [voter.voter_id for voter in db_defs.Voter.query().fetch()]
