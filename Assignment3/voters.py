@@ -35,7 +35,7 @@ class Voters(base_page.BaseHandler):
     def post(self):
 
         #testing 
-        self.response.write("you just made a post to Voters.py with\nvoterID# %s\npassword: %s\n\n" % (self.request.get('id'), self.request.get('pass')))
+        #self.response.write("you just made a post to Voters.py with\nvoterID# %s\npassword: %s\n\n" % (self.request.get('id'), self.request.get('pass')))
 
         if not self.request.get('id'):
             self.response.write("Error, incorrect parameters")
@@ -46,8 +46,8 @@ class Voters(base_page.BaseHandler):
 
         #condition that just the id was entered (determines if voter exists)
         if not self.request.get('pass'):
-
-            self.response.write("voter value: %s\n\n" % (str(voter)))
+            #testing
+            #self.response.write("voter value: %s\n\n" % (str(voter)))
 
             if voter != None:
                 self.response.write(json.dumps({ "ID_exists" :  True, "has_pass" : (voter.password != None) }))
