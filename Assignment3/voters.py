@@ -134,8 +134,7 @@ class Voters(base_page.BaseHandler):
         elif self.request.get('new') == 'False':
             newVoter.put()
 
-        self.response.write("voter_key = %s\n" % (str(voter_key)))
-
+        self.response.write(json.dumps({"voter_key": voter_key.id()}))
 
 #decodes enumerated and abbreviated voter info into dict
 def format_voter(voter):
