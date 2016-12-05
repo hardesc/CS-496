@@ -60,8 +60,16 @@ class Voters(base_page.BaseHandler):
                 self.response.write(json.dumps({"VoterAuth": True, "key" : voter.key.id()}))
             else: self.response.write(json.dumps({"VoterAuth": False}))
 
-    #create a single new voter or update an existing voter
-    def put(self):
+    #create a single new voter or update/ delete an existing voter
+    def put(self, **kwargs):
+
+        #alternate delete voter method (if http DELETE not supported)
+        if self.request.get('delete'):
+            if self.request.get('delete') == 'True':
+                get_var = kwargs['voter']
+                the_voter = db_defs.Voter.get_by_id(int(get_var))
+                the_voter.key.delete()
+                return
 
         #Error condition
         if not self.request.get('new'):
@@ -128,12 +136,6 @@ class Voters(base_page.BaseHandler):
 
         self.response.write("voter_key = %s\n" % (str(voter_key)))
 
-    def delete(self, **kwargs):
-
-        get_var = kwargs['voter']
-        the_voter = db_defs.Voter.get_by_id(int(get_var))
-        the_voter.key.delete()
-        
 
 #decodes enumerated and abbreviated voter info into dict
 def format_voter(voter):
