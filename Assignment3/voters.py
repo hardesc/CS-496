@@ -129,12 +129,13 @@ class Voters(base_page.BaseHandler):
         #if this is new voter entity, the voter_key returned by put is new key...
         if self.request.get('new') == 'True':
             voter_key = newVoter.put()
-
+            self.response.write(json.dumps({"voter_key": voter_key.id()}))
+            
         #but if the voter entity is being updated, ignore the value returned by put()
         elif self.request.get('new') == 'False':
             newVoter.put()
 
-        self.response.write(json.dumps({"voter_key": voter_key.id()}))
+        
 
 #decodes enumerated and abbreviated voter info into dict
 def format_voter(voter):
