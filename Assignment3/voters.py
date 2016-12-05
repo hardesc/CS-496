@@ -128,6 +128,11 @@ class Voters(base_page.BaseHandler):
 
         self.response.write("voter_key = %s\n" % (str(voter_key)))
 
+    def delete(self, **kwargs):
+
+        get_var = kwargs['voter']
+        the_voter = db_defs.Voter.get_by_id(int(get_var))
+        the_voter.key.delete()
         
 
 #decodes enumerated and abbreviated voter info into dict
@@ -154,6 +159,8 @@ def format_voter(voter):
 
 
     return voter_dict
+
+
 
 #checks if a particular voter.voter_id already exists, if not, returns None...if exists, returns the entity
 def idCheck(theID):
